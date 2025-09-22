@@ -36,7 +36,8 @@ namespace webview_cef {
 	    bool m_init = false;
     };
 
-    int initCEFProcesses(CefMainArgs args);
+    int initCEFProcessesWithArgs(CefMainArgs args);
+    int initCEFProcessesWithHInstance(HINSTANCE hInstance);
     int initCEFProcesses();
     void startCEF();
     void doMessageLoopWork();

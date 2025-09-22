@@ -536,7 +536,18 @@ namespace webview_cef {
 		}
 		return 1;
 	}
-
+	int initCEFProcessesWithHInstance(HINSTANCE hInstance)
+	{
+		// mainArgs = args;
+		CefMainArgs args(hInstance);
+		mainArgs = args;
+		return initCEFProcesses();
+	}
+	int initCEFProcessesWithArgs(CefMainArgs args)
+	{
+		mainArgs = args;
+		return initCEFProcesses();
+	}
 	int initCEFProcesses(CefMainArgs args)
 	{
 		mainArgs = args;
