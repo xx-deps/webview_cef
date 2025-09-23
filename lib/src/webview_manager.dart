@@ -34,7 +34,7 @@ class WebviewManager extends ValueNotifier<bool> {
     final controller =
         WebViewController(pluginChannel, browserIndex, loading: loading);
     _tempWebViews[browserIndex] = controller;
-    _tempInjectUserScripts[browserIndex] = injectUserScripts;
+    _tempInjectUserScripts[browserIndex] = injectUserScripts ?? InjectUserScripts();
 
     return controller;
   }
