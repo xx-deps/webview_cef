@@ -15,10 +15,19 @@ fi
 # Assign file path argument
 file="$1"
 
-# Check if the file exists
+# Check if the file exists at the provided path
 if [ ! -f "$file" ]; then
-  echo "File not found: $file"
-  exit 1
+  # If not, construct a path in the parent directory with the same filename
+  parent_dir_file=$(dirname "$(dirname $file)")/$(basename "$file")
+
+  # Check if the file exists at the new path
+  if [ -f "$parent_dir_file" ]; then
+    file="$parent_dir_file" # Use the new path if it exists
+  else
+    # If neither path is valid, exit
+    echo "File not found at '$file' or in its parent directory."
+    exit 1
+  fi
 fi
 
 # Check if the line g_signal_connect exists in the file
