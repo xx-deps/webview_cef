@@ -8,7 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:webview_cef_example/main.dart';
+import 'package:webview_cef_example/main_demo1.dart';
 
 void main() {
   testWidgets('Verify Platform version', (WidgetTester tester) async {
