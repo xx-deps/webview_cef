@@ -49,29 +49,6 @@ class _MyAppState extends State<MyApp> {
     _controller.setWebviewListener(WebviewEventsListener(
       onUrlChanged: (url) {
         _textController.text = url;
-
-        // JavascriptChannel 用于 JavaScript 和 Dart 之间的通信，监听从 JavaScript 发来的消息。
-        final Set<JavascriptChannel> jsChannels = {
-          JavascriptChannel(
-              name: 'Print',
-              onMessageReceived: (JavascriptMessage message) {
-                print("JS say:" +
-                    jsonEncode(message.message)); // 打印 JavaScript 发来的消息
-                _controller.sendJavaScriptChannelCallBack(
-                    false,
-                    "{'code':'200','message':'print succeed!'}",
-                    message.callbackId,
-                    message.frameId);
-              }),
-        };
-        //normal JavaScriptChannels
-        _controller.setJavaScriptChannels(jsChannels);
-        _controller.executeJavaScript("window.Print('ee', 'rr')");
-        //also you can build your own jssdk by execute JavaScript code to CEF
-        _controller.executeJavaScript("function abc(e){return 'abc:'+ e}");
-        _controller
-            .evaluateJavascript("abc('zj_test')")
-            .then((value) => print(value));
       },
       onLoadStart: (controller, url) {
         print("onLoadStart => $url");

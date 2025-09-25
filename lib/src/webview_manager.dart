@@ -118,26 +118,6 @@ class WebviewManager extends ValueNotifier<bool> {
     }
   }
 
-  Future<void> setCookie(String domain, String key, String val) async {
-    assert(value);
-    return pluginChannel.invokeMethod('setCookie', [domain, key, val]);
-  }
-
-  Future<void> deleteCookie(String domain, String key) async {
-    assert(value);
-    return pluginChannel.invokeMethod('deleteCookie', [domain, key]);
-  }
-
-  Future<dynamic> visitAllCookies() async {
-    assert(value);
-    return pluginChannel.invokeMethod('visitAllCookies');
-  }
-
-  Future<dynamic> visitUrlCookies(String domain, bool isHttpOnly) async {
-    assert(value);
-    return pluginChannel.invokeMethod('visitUrlCookies', [domain, isHttpOnly]);
-  }
-
   Future<void> quit() async {
     //only call this method when you want to quit the app
     assert(value);

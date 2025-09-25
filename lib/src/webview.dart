@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 
 import 'webview_manager.dart';
 import 'webview_events_listener.dart';
-import 'webview_javascript.dart';
 import 'webview_textinput.dart';
 import 'webview_tooltip.dart';
 
@@ -31,9 +30,6 @@ class WebViewController extends ValueNotifier<bool> {
   final int _index;
   late int _browserId;
   late int _textureId;
-  final Map<String, JavascriptChannel> _javascriptChannels =
-      <String, JavascriptChannel>{};
-  Map<String, JavascriptChannel> get javascriptChannels => _javascriptChannels;
   WebviewEventsListener? _listener;
   WebviewEventsListener? get listener => _listener;
 
@@ -129,48 +125,6 @@ class WebViewController extends ValueNotifier<bool> {
     return _pluginChannel.invokeMethod('setClientFocus', [_browserId, focus]);
   }
 
-  Future<void> setJavaScriptChannels(Set<JavascriptChannel> channels) async {
-    if (_isDisposed) {
-      return;
-    }
-    assert(value);
-    _assertJavascriptChannelNamesAreUnique(channels);
-
-    for (var channel in channels) {
-      _javascriptChannels[channel.name] = channel;
-    }
-
-    return _pluginChannel.invokeMethod('setJavaScriptChannels',
-        [_browserId, _extractJavascriptChannelNames(channels).toList()]);
-  }
-
-  Future<void> sendJavaScriptChannelCallBack(
-      bool error, String result, String callbackId, String frameId) async {
-    if (_isDisposed) {
-      return;
-    }
-    assert(value);
-    return _pluginChannel.invokeMethod('sendJavaScriptChannelCallBack',
-        [error, result, callbackId, _browserId, frameId]);
-  }
-
-  Future<void> executeJavaScript(String code) async {
-    if (_isDisposed) {
-      return;
-    }
-    assert(value);
-    return _pluginChannel.invokeMethod('executeJavaScript', [_browserId, code]);
-  }
-
-  Future<dynamic> evaluateJavascript(String code) async {
-    if (_isDisposed) {
-      return;
-    }
-    assert(value);
-    return _pluginChannel
-        .invokeMethod('evaluateJavascript', [_browserId, code]);
-  }
-
   /// Moves the virtual cursor to [position].
   Future<void> _cursorMove(Offset position) async {
     if (_isDisposed) {
@@ -226,20 +180,6 @@ class WebViewController extends ValueNotifier<bool> {
     assert(value);
     return _pluginChannel
         .invokeMethod('setSize', [_browserId, dpi, size.width, size.height]);
-  }
-
-  Set<String> _extractJavascriptChannelNames(Set<JavascriptChannel> channels) {
-    final Set<String> channelNames =
-        channels.map((JavascriptChannel channel) => channel.name).toSet();
-    return channelNames;
-  }
-
-  void _assertJavascriptChannelNamesAreUnique(
-      final Set<JavascriptChannel>? channels) {
-    if (channels == null || channels.isEmpty) {
-      return;
-    }
-    assert(_extractJavascriptChannelNames(channels).length == channels.length);
   }
 
   Function(String)? _onToolTip;

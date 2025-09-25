@@ -133,7 +133,7 @@ bool WebviewHandler::OnBeforePopup(CefRefPtr<CefBrowser> browser,
 
 void WebviewHandler::OnTakeFocus(CefRefPtr<CefBrowser> browser, bool next)
 {
-    // executeJavaScript(browser->GetIdentifier(), "document.activeElement.blur()");
+    
 }
 
 bool WebviewHandler::OnSetFocus(CefRefPtr<CefBrowser> browser, FocusSource source)
