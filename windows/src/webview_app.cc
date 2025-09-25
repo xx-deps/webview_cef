@@ -159,11 +159,6 @@ void WebviewApp::OnContextInitialized()
     CEF_REQUIRE_UI_THREAD();    
 }
 
-void WebviewApp::SetUnSafelyTreatInsecureOriginAsSecure(const CefString &strFilterDomain)
-{
-    m_strFilterDomain = strFilterDomain;
-}
-
 void WebviewApp::OnWebKitInitialized()
 {
 }

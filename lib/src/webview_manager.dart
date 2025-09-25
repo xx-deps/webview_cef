@@ -90,13 +90,6 @@ class WebviewManager extends ValueNotifier<bool> {
             ?.onUrlChanged
             ?.call(call.arguments["url"] as String);
         return;
-      case "titleChanged":
-        int browserId = call.arguments["browserId"] as int;
-        _webViews[browserId]
-            ?.listener
-            ?.onTitleChanged
-            ?.call(call.arguments["title"] as String);
-        return;
       case "onConsoleMessage":
         int browserId = call.arguments["browserId"] as int;
         _webViews[browserId]?.listener?.onConsoleMessage?.call(

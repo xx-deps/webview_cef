@@ -18,14 +18,12 @@ typedef OnConsoleMessage = void Function(
     int level, String message, String source, int line);
 
 class WebviewEventsListener {
-  TitleChangeCb? onTitleChanged;
   UrlChangeCb? onUrlChanged;
   OnConsoleMessage? onConsoleMessage;
   LoadStartCb? onLoadStart;
   LoadStopCb? onLoadEnd;
 
   WebviewEventsListener({
-    this.onTitleChanged,
     this.onUrlChanged,
     this.onConsoleMessage,
     this.onLoadStart,

@@ -69,10 +69,6 @@ bool WebviewHandler::OnProcessMessageReceived(
     return false;
 }
 
-void WebviewHandler::OnTitleChange(CefRefPtr<CefBrowser> browser,
-                                  const CefString& title) {
-}
-
 void WebviewHandler::OnAddressChange(CefRefPtr<CefBrowser> browser,
                              CefRefPtr<CefFrame> frame,
                      const CefString& url) {
@@ -380,14 +376,6 @@ void WebviewHandler::setClientFocus(int browserId, bool focus)
     }
     it->second.browser->GetHost()->SetFocus(focus);
 }
-
-
-// static std::string GetCallbackId()
-// {
-//     auto time = std::chrono::time_point_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now());
-// 	time_t timestamp = time.time_since_epoch().count();
-//     return std::to_string(timestamp);
-// } 
 
 void WebviewHandler::GetViewRect(CefRefPtr<CefBrowser> browser, CefRect &rect) {
     CEF_REQUIRE_UI_THREAD();

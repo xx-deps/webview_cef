@@ -74,11 +74,6 @@ class _MyAppState extends State<MyApp> {
     _textController.text = url;
     //unified interface for all platforms set user agent
     _controller.setWebviewListener(WebviewEventsListener(
-      onTitleChanged: (t) {
-        setState(() {
-          title = t;
-        });
-      },
       onUrlChanged: (url) {
         _textController.text = url;
 

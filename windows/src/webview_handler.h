@@ -76,8 +76,6 @@ public:
         CefRefPtr<CefProcessMessage> message) override;
 
     // CefDisplayHandler methods:
-    virtual void OnTitleChange(CefRefPtr<CefBrowser> browser,
-                               const CefString &title) override;
     // 浏览器加载的 URL 地址发生变化时被调用。
     virtual void OnAddressChange(CefRefPtr<CefBrowser> browser,
                                  CefRefPtr<CefFrame> frame,
