@@ -95,6 +95,7 @@ WebviewApp::ProcessType WebviewApp::GetProcessType(CefRefPtr<CefCommandLine> com
 	return OtherProcess;
 }
 
+// OnBeforeCommandLineProcessing 方法在浏览器进程启动之前被调用
 void WebviewApp::OnBeforeCommandLineProcessing(const CefString &process_type, CefRefPtr<CefCommandLine> command_line)
 {
     // Pass additional command-line flags to the browser process.

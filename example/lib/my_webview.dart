@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:webview_cef/webview_cef.dart';
-import 'package:webview_cef/src/webview_inject_user_script.dart';
 
 class MyWebview extends StatefulWidget {
   final String url;
@@ -16,16 +15,13 @@ class _MyWebviewState extends State<MyWebview> {
   @override
   void initState() {
     super.initState();
-    // 注入js脚本
-    var injectUserScripts = InjectUserScripts();
 
     // 创建 webview
     _controller = WebviewManager().createWebView(
         loading: const Column(children: [
           Text('loading'),
           CircularProgressIndicator(),
-        ],),
-        injectUserScripts: injectUserScripts);
+        ],),);
 
     _initializeWebView();
   }

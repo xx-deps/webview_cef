@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:webview_cef/webview_cef.dart';
-import 'package:webview_cef/src/webview_inject_user_script.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,36 +24,10 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    // 注入js脚本
-    var injectUserScripts = InjectUserScripts();
-
-    // 页面开始的时候, 执行的脚本
-    injectUserScripts
-        .add(UserScript("console.log('页面开始')", ScriptInjectTime.LOAD_START));
-
-    // 页面结束的时候, 执行的脚本
-    injectUserScripts
-        .add(UserScript("console.log('页面结束')", ScriptInjectTime.LOAD_END));
-
-    // CSS Injection Script Example
-    injectUserScripts.add(UserScript(
-      '''
-        const style = document.createElement('style');
-        style.innerHTML = `
-          body {
-            background-color: yellow;
-          }
-        `;
-    
-        document.body.appendChild(style);
-      ''',
-      ScriptInjectTime.LOAD_START,
-    ));
 
     // 创建 webview
     _controller = WebviewManager().createWebView(
-        loading: const Text("not initialized"),
-        injectUserScripts: injectUserScripts);
+        loading: const Text("not initialized"));
         
     initPlatformState();
   }

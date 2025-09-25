@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:webview_cef/src/webview_inject_user_script.dart';
 
 import 'webview.dart';
 
@@ -17,10 +16,8 @@ class WebviewManager extends ValueNotifier<bool> {
   final MethodChannel pluginChannel = const MethodChannel("webview_cef");
 
   final Map<int, WebViewController> _webViews = <int, WebViewController>{};
-  final Map<int, InjectUserScripts?> _injectUserScripts = <int, InjectUserScripts>{};
 
   final Map<int, WebViewController> _tempWebViews = <int, WebViewController>{};
-  final Map<int, InjectUserScripts?> _tempInjectUserScripts = <int, InjectUserScripts>{};
 
   int nextIndex = 1;
 
@@ -28,13 +25,11 @@ class WebviewManager extends ValueNotifier<bool> {
 
   WebViewController createWebView({
     Widget? loading,
-    InjectUserScripts? injectUserScripts,
   }) {
     int browserIndex = nextIndex++;
     final controller =
         WebViewController(pluginChannel, browserIndex, loading: loading);
     _tempWebViews[browserIndex] = controller;
-    _tempInjectUserScripts[browserIndex] = injectUserScripts;
 
     return controller;
   }
@@ -75,10 +70,8 @@ class WebviewManager extends ValueNotifier<bool> {
 
   void onBrowserCreated(int browserIndex, int browserId) {
     _webViews[browserId] = _tempWebViews[browserIndex]!;
-    _injectUserScripts[browserId] = _tempInjectUserScripts[browserIndex];
 
     _tempWebViews.remove(browserIndex);
-    _tempInjectUserScripts.remove(browserIndex);
   }
 
   Future<void> methodCallhandler(MethodCall call) async {
@@ -109,8 +102,6 @@ class WebviewManager extends ValueNotifier<bool> {
         int browserId = call.arguments["browserId"] as int;
         String urlId = call.arguments["urlId"] as String;
 
-        await _injectUserScriptIfNeeds(browserId, _injectUserScripts[browserId]?.retrieveLoadStartInjectScripts() ?? []);
-
         WebViewController controller =
         _webViews[browserId] as WebViewController;
         _webViews[browserId]?.listener?.onLoadStart?.call(controller, urlId);
@@ -119,24 +110,12 @@ class WebviewManager extends ValueNotifier<bool> {
         int browserId = call.arguments["browserId"] as int;
         String urlId = call.arguments["urlId"] as String;
 
-        await _injectUserScriptIfNeeds(browserId, _injectUserScripts[browserId]?.retrieveLoadEndInjectScripts() ?? []);
-
         WebViewController controller =
         _webViews[browserId] as WebViewController;
         _webViews[browserId]?.listener?.onLoadEnd?.call(controller, urlId);
         return;
       default:
     }
-  }
-
-  Future<void> _injectUserScriptIfNeeds(int browserId, List<UserScript> scripts) async {
-    if (scripts.isEmpty) return;
-
-    await _webViews[browserId]?.ready;
-
-    scripts.forEach((script) async {
-      await _webViews[browserId]?.executeJavaScript(script.script);
-    },);
   }
 
   Future<void> setCookie(String domain, String key, String val) async {

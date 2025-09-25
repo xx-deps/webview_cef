@@ -148,25 +148,37 @@ public:
     // Returns true if the Chrome runtime is enabled.
     static bool IsChromeRuntimeEnabled();
 
+    // 关闭指定的浏览器窗口
+    void closeBrowser(int browserId);
+    // 创建一个新的浏览器窗口并加载指定的 URL
+    void createBrowser(std::string url, std::function<void(int)> callback);
 
-    void closeBrowser(int browserId);     // 关闭指定的浏览器窗口
-    void createBrowser(std::string url, std::function<void(int)> callback);  // 创建一个新的浏览器窗口并加载指定的 URL
-
-    void sendScrollEvent(int browserId, int x, int y, int deltaX, int deltaY);// 发送滚动事件，模拟浏览器的滚动操作
-    void changeSize(int browserId, float a_dpi, int width, int height); // 改变指定浏览器的大小
-    void cursorClick(int browserId, int x, int y, bool up); // 发送鼠标点击事件
-    void cursorMove(int browserId, int x, int y, bool dragging); // 发送鼠标移动事件
-    void sendKeyEvent(CefKeyEvent &ev); // 发送键盘事件
-    void loadUrl(int browserId, std::string url); // 加载指定 URL 的页面
-    void goForward(int browserId); // 浏览器前进到下一个页面
-    void goBack(int browserId); // 浏览器后退到上一个页面
-    void reload(int browserId); // 重新加载页面
-    void openDevTools(int browserId); // 打开浏览器的开发者工具
-
-    void setClientFocus(int browserId, bool focus); // 设置浏览器是否获取焦点。
+    // 发送滚动事件，模拟浏览器的滚动操作
+    void sendScrollEvent(int browserId, int x, int y, int deltaX, int deltaY);
+    // 改变指定浏览器的大小
+    void changeSize(int browserId, float a_dpi, int width, int height);
+    // 发送鼠标点击事件
+    void cursorClick(int browserId, int x, int y, bool up);
+    // 发送鼠标移动事件
+    void cursorMove(int browserId, int x, int y, bool dragging);
+    // 发送键盘事件
+    void sendKeyEvent(CefKeyEvent &ev);
+    // 加载指定 URL 的页面
+    void loadUrl(int browserId, std::string url);
+    // 浏览器前进到下一个页面
+    void goForward(int browserId);
+    // 浏览器后退到上一个页面
+    void goBack(int browserId);
+    // 重新加载页面
+    void reload(int browserId);
+    // 打开浏览器的开发者工具
+    void openDevTools(int browserId);
+    // 设置浏览器是否获取焦点。
+    void setClientFocus(int browserId, bool focus);
 
 private:
     // List of existing browser windows. Only accessed on the CEF UI thread.
+    // （哈希表），用于存储所有打开的浏览器窗口。
     std::unordered_map<int, browser_info> browser_map_;
 
     std::unordered_map<std::string, std::function<void(CefRefPtr<CefValue>)>> js_callbacks_;
