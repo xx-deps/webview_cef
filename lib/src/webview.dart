@@ -7,8 +7,6 @@ import 'package:flutter/services.dart';
 
 import 'webview_manager.dart';
 import 'webview_events_listener.dart';
-import 'webview_textinput.dart';
-import 'webview_tooltip.dart';
 
 class WebViewController extends ValueNotifier<bool> {
   WebViewController(this._pluginChannel, this._index, {Widget? loading})
@@ -25,7 +23,6 @@ class WebViewController extends ValueNotifier<bool> {
   late Completer<void> _creatingCompleter;
   Future<void> get ready => _creatingCompleter.future;
   bool _isDisposed = false;
-  bool _focusEditable = false;
 
   final int _index;
   late int _browserId;
@@ -196,32 +193,17 @@ class WebView extends StatefulWidget {
   WebViewState createState() => WebViewState();
 }
 
-class WebViewState extends State<WebView> with WebeViewTextInput {
+class WebViewState extends State<WebView> {
   final GlobalKey _key = GlobalKey();
   late final _focusNode = FocusNode();
   bool isPrimaryFocus = false;
-  WebviewTooltip? _tooltip;
   MouseCursor _mouseType = SystemMouseCursors.basic;
 
   WebViewController get _controller => widget.controller;
 
   @override
-  updateEditingValueWithDeltas(List<TextEditingDelta> textEditingDeltas) {
-
-  }
-
-  @override
   void initState() {
     super.initState();
-    _controller._onFocusedNodeChangeMessage = (editable) {
-      editable ? attachTextInputClient() : detachTextInputClient();
-      _controller._focusEditable = editable;
-    };
-
-    _controller._onToolTip = (final String text) {
-      _tooltip ??= WebviewTooltip(_key.currentContext!);
-      _tooltip?.showToolTip(text);
-    };
 
     _controller._onCursorChanged = (int type) {
       switch (type) {
@@ -262,14 +244,8 @@ class WebViewState extends State<WebView> with WebeViewTextInput {
       onFocusChange: (focused) {
         if (focused) {
           _controller.setClientFocus(true);
-          if (_controller._focusEditable) {
-            attachTextInputClient();
-          }
         } else {
           _controller.setClientFocus(false);
-          if (_controller._focusEditable) {
-            detachTextInputClient();
-          }
         }
       },
       child: SizedBox.expand(key: _key, child: _buildInner()),
@@ -286,7 +262,6 @@ class WebViewState extends State<WebView> with WebeViewTextInput {
         child: Listener(
           onPointerHover: (ev) {
             _controller._cursorMove(ev.localPosition);
-            _tooltip?.cursorOffset = ev.position;
           },
           onPointerDown: (ev) {
             if (!_focusNode.hasFocus) {
