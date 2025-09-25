@@ -40,7 +40,7 @@ class _WebViewTabsState extends State<WebViewTabs>
             MyWebview(url: "https://pub.dev/packages/webview_cef/changelog");
         break;
       case 2:
-        child = MyWebview(url: "http://www.baidu.com");
+        child = MyWebview(url: "https://web.oopz.cn/");
         break;
       default:
         child = const SizedBox.shrink();

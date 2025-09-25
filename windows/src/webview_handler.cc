@@ -252,7 +252,7 @@ void WebviewHandler::createBrowser(std::string url, std::function<void(int)> cal
         return;
     }
     CefBrowserSettings browser_settings;
-    browser_settings.windowless_frame_rate = 30;
+    browser_settings.windowless_frame_rate = 60;
     CefWindowInfo window_info;
     window_info.SetAsWindowless(0);
     callback(CefBrowserHost::CreateBrowserSync(window_info, this, url, browser_settings, nullptr, nullptr)->GetIdentifier());
