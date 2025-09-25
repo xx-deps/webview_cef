@@ -41,6 +41,15 @@ public:
   {
     fl_texture_registrar_unregister_texture(register_, FL_TEXTURE(texture));
     register_ = nullptr;
+    // 释放 texture->buffer 分配的内存
+    if (texture->buffer) {
+        delete[] texture->buffer;
+        texture->buffer = nullptr;
+    }
+    
+    // 假设 texture 本身是动态分配的，释放它
+    delete texture;
+    texture = nullptr;
   }
 
   virtual void onFrame(const void *buffer, int32_t width, int32_t height) override

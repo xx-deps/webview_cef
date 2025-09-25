@@ -9,6 +9,7 @@
 #include <thread>
 #include <iostream>
 #include <unordered_map>
+#include "include/base/cef_callback.h"
 
 namespace webview_cef {
 	CefMainArgs mainArgs;
@@ -245,7 +246,8 @@ namespace webview_cef {
 		}
 		else if (name.compare("quit") == 0) {
 			//only call this method when you want to quit the app
-			stopCEF();
+			// stopCEF();
+			m_handler->CloseAllBrowsers(true);
 			result(1, nullptr);
 		}
 		else if (name.compare("create") == 0) {
@@ -610,6 +612,11 @@ namespace webview_cef {
 
     void stopCEF()
     {
-		CefShutdown();
+		// if(!CefCurrentlyOn(TID_UI)) {
+		// 	CefPostTask(TID_UI, base::BindOnce(&CefShutdown));
+		// 	return;
+		// }
+		// CefShutdown();
+		// CefPostTask(TID_UI, base::BindOnce(&CefShutdown));
     }
 }

@@ -25,18 +25,18 @@ list(APPEND PLUGIN_SOURCES
   "webview_cef_plugin.cpp"
   "webview_cef_plugin.h"
   "webview_cef_keyevent.h"
-  "${CMAKE_CURRENT_LIST_DIR}/../common/webview_app.cc"
-  "${CMAKE_CURRENT_LIST_DIR}/../common/webview_app.h"
-  "${CMAKE_CURRENT_LIST_DIR}/../common/webview_handler.cc"
-  "${CMAKE_CURRENT_LIST_DIR}/../common/webview_handler.h"
-  "${CMAKE_CURRENT_LIST_DIR}/../common/webview_plugin.cc"
-  "${CMAKE_CURRENT_LIST_DIR}/../common/webview_plugin.h"
-  "${CMAKE_CURRENT_LIST_DIR}/../common/webview_value.cc"
-  "${CMAKE_CURRENT_LIST_DIR}/../common/webview_value.h"
-  "${CMAKE_CURRENT_LIST_DIR}/../common/webview_js_handler.cc"
-  "${CMAKE_CURRENT_LIST_DIR}/../common/webview_js_handler.h"
-  "${CMAKE_CURRENT_LIST_DIR}/../common/webview_cookieVisitor.cc"
-  "${CMAKE_CURRENT_LIST_DIR}/../common/webview_cookieVisitor.h"
+  "src/webview_app.cc"
+  "src/webview_app.h"
+  "src/webview_handler.cc"
+  "src/webview_handler.h"
+  "src/webview_plugin.cc"
+  "src/webview_plugin.h"
+  "src/webview_value.cc"
+  "src/webview_value.h"
+  "src/webview_js_handler.cc"
+  "src/webview_js_handler.h"
+  "src/webview_cookieVisitor.cc"
+  "src/webview_cookieVisitor.h"
 )
 
 # Define the plugin library target. Its name must not be changed (see comment
@@ -64,7 +64,7 @@ target_compile_definitions(${PLUGIN_NAME} PRIVATE FLUTTER_PLUGIN_IMPL)
 target_include_directories(${PLUGIN_NAME} INTERFACE
   "${CMAKE_CURRENT_SOURCE_DIR}/include")
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third/cef)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../common)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
 
 target_link_libraries(${PLUGIN_NAME} PRIVATE flutter flutter_wrapper_plugin
 debug ${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/debug/libcef.lib
