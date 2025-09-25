@@ -54,10 +54,12 @@ public:
     ~WebviewHandler();
 
     // CefClient methods:
+    // 删了，会影响鼠标指针的变化
     virtual CefRefPtr<CefDisplayHandler> GetDisplayHandler() override
     {
         return this;
     }
+    // 删了，会闪退
     virtual CefRefPtr<CefLifeSpanHandler> GetLifeSpanHandler() override
     {
         return this;
