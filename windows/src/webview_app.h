@@ -47,28 +47,8 @@ public:
     void SetProcessMode(uint32_t uMode);
     void SetEnableGPU(bool bEnable);
     void OnContextInitialized() override;
-    void OnBeforeChildProcessLaunch(CefRefPtr<CefCommandLine> command_line) override;
 
     // CefRenderProcessHandler methods.
-    void OnWebKitInitialized() override;
-    void OnBrowserCreated(
-        CefRefPtr<CefBrowser> browser,
-        CefRefPtr<CefDictionaryValue> extra_info) override;
-    void OnBrowserDestroyed(CefRefPtr<CefBrowser> browser) override;
-    void OnContextCreated(
-        CefRefPtr<CefBrowser> browser,
-        CefRefPtr<CefFrame> frame,
-        CefRefPtr<CefV8Context> context) override;
-    void OnContextReleased(
-        CefRefPtr<CefBrowser> browser,
-        CefRefPtr<CefFrame> frame,
-        CefRefPtr<CefV8Context> context) override;
-    void OnUncaughtException(
-        CefRefPtr<CefBrowser> browser,
-        CefRefPtr<CefFrame> frame,
-        CefRefPtr<CefV8Context> context,
-        CefRefPtr<CefV8Exception> exception,
-        CefRefPtr<CefV8StackTrace> stackTrace) override;
     void OnFocusedNodeChanged(
         CefRefPtr<CefBrowser> browser,
         CefRefPtr<CefFrame> frame,

@@ -12,124 +12,133 @@
 #include "include/views/cef_window.h"
 #include "include/wrapper/cef_helpers.h"
 
-namespace {
+namespace
+{
 
-// When using the Views framework this object provides the delegate
-// implementation for the CefWindow that hosts the Views-based browser.
-class SimpleWindowDelegate : public CefWindowDelegate {
-public:
-    explicit SimpleWindowDelegate(CefRefPtr<CefBrowserView> browser_view)
-    : browser_view_(browser_view) {}
-    
-    void OnWindowCreated(CefRefPtr<CefWindow> window) override {
-        // Add the browser view and show the window.
-        window->AddChildView(browser_view_);
-        window->Show();
-        
-        // Give keyboard focus to the browser view.
-        browser_view_->RequestFocus();
-    }
-    
-    void OnWindowDestroyed(CefRefPtr<CefWindow> window) override {
-        browser_view_ = nullptr;
-    }
-    
-    bool CanClose(CefRefPtr<CefWindow> window) override {
-        // Allow the window to close if the browser says it's OK.
-        CefRefPtr<CefBrowser> browser = browser_view_->GetBrowser();
-        if (browser)
-            return browser->GetHost()->TryCloseBrowser();
-        return true;
-    }
-    
-    CefSize GetPreferredSize(CefRefPtr<CefView> view) override {
-        return CefSize(1280, 720);
-    }
-    
-private:
-    CefRefPtr<CefBrowserView> browser_view_;
-    
-    IMPLEMENT_REFCOUNTING(SimpleWindowDelegate);
-    DISALLOW_COPY_AND_ASSIGN(SimpleWindowDelegate);
-};
+    // When using the Views framework this object provides the delegate
+    // implementation for the CefWindow that hosts the Views-based browser.
+    class SimpleWindowDelegate : public CefWindowDelegate
+    {
+    public:
+        explicit SimpleWindowDelegate(CefRefPtr<CefBrowserView> browser_view)
+            : browser_view_(browser_view) {}
 
-class SimpleBrowserViewDelegate : public CefBrowserViewDelegate {
-public:
-    SimpleBrowserViewDelegate() {}
-    
-    bool OnPopupBrowserViewCreated(CefRefPtr<CefBrowserView> browser_view,
-                                   CefRefPtr<CefBrowserView> popup_browser_view,
-                                   bool is_devtools) override {
-        // Create a new top-level Window for the popup. It will show itself after
-        // creation.
-        CefWindow::CreateTopLevelWindow(
-                                        new SimpleWindowDelegate(popup_browser_view));
-        
-        // We created the Window.
-        return true;
-    }
-    
-private:
-    IMPLEMENT_REFCOUNTING(SimpleBrowserViewDelegate);
-    DISALLOW_COPY_AND_ASSIGN(SimpleBrowserViewDelegate);
-};
+        void OnWindowCreated(CefRefPtr<CefWindow> window) override
+        {
+            // Add the browser view and show the window.
+            window->AddChildView(browser_view_);
+            window->Show();
 
-}  // namespace
+            // Give keyboard focus to the browser view.
+            browser_view_->RequestFocus();
+        }
 
-WebviewApp::WebviewApp(CefRefPtr<WebviewHandler> handler) {
+        void OnWindowDestroyed(CefRefPtr<CefWindow> window) override
+        {
+            browser_view_ = nullptr;
+        }
+
+        bool CanClose(CefRefPtr<CefWindow> window) override
+        {
+            // Allow the window to close if the browser says it's OK.
+            CefRefPtr<CefBrowser> browser = browser_view_->GetBrowser();
+            if (browser)
+                return browser->GetHost()->TryCloseBrowser();
+            return true;
+        }
+
+        CefSize GetPreferredSize(CefRefPtr<CefView> view) override
+        {
+            return CefSize(1280, 720);
+        }
+
+    private:
+        CefRefPtr<CefBrowserView> browser_view_;
+
+        IMPLEMENT_REFCOUNTING(SimpleWindowDelegate);
+        DISALLOW_COPY_AND_ASSIGN(SimpleWindowDelegate);
+    };
+
+    class SimpleBrowserViewDelegate : public CefBrowserViewDelegate
+    {
+    public:
+        SimpleBrowserViewDelegate() {}
+
+        bool OnPopupBrowserViewCreated(CefRefPtr<CefBrowserView> browser_view,
+                                       CefRefPtr<CefBrowserView> popup_browser_view,
+                                       bool is_devtools) override
+        {
+            // Create a new top-level Window for the popup. It will show itself after
+            // creation.
+            CefWindow::CreateTopLevelWindow(
+                new SimpleWindowDelegate(popup_browser_view));
+
+            // We created the Window.
+            return true;
+        }
+
+    private:
+        IMPLEMENT_REFCOUNTING(SimpleBrowserViewDelegate);
+        DISALLOW_COPY_AND_ASSIGN(SimpleBrowserViewDelegate);
+    };
+
+} // namespace
+
+WebviewApp::WebviewApp(CefRefPtr<WebviewHandler> handler)
+{
     m_handler = handler;
 }
 
 WebviewApp::ProcessType WebviewApp::GetProcessType(CefRefPtr<CefCommandLine> command_line)
 {
     // The command-line flag won't be specified for the browser process.
-	if (!command_line->HasSwitch("type"))
+    if (!command_line->HasSwitch("type"))
     {
         return BrowserProcess;
     }
 
-	const std::string& process_type = command_line->GetSwitchValue("type");
-	if (process_type == "renderer")
-		return RendererProcess;
+    const std::string &process_type = command_line->GetSwitchValue("type");
+    if (process_type == "renderer")
+        return RendererProcess;
 
-	return OtherProcess;
+    return OtherProcess;
 }
 
 // OnBeforeCommandLineProcessing 方法在浏览器进程启动之前被调用
 void WebviewApp::OnBeforeCommandLineProcessing(const CefString &process_type, CefRefPtr<CefCommandLine> command_line)
 {
     // Pass additional command-line flags to the browser process.
-	if (process_type.empty())
-	{
-		if (!m_bEnableGPU)
-		{
-			command_line->AppendSwitch("disable-gpu");
-			command_line->AppendSwitch("disable-gpu-compositing");
-		}
+    if (process_type.empty())
+    {
+        if (!m_bEnableGPU)
+        {
+            command_line->AppendSwitch("disable-gpu");
+            command_line->AppendSwitch("disable-gpu-compositing");
+        }
 
-		command_line->AppendSwitch("disable-web-security");                                     //disable web security
-		command_line->AppendSwitch("allow-running-insecure-content");                           //allow running insecure content in secure pages
-		// Don't create a "GPUCache" directory when cache-path is unspecified.
-		command_line->AppendSwitch("disable-gpu-shader-disk-cache");                            //disable gpu shader disk cache
-        command_line->AppendSwitch("no-sanbox");                       
+        command_line->AppendSwitch("disable-web-security");           // disable web security
+        command_line->AppendSwitch("allow-running-insecure-content"); // allow running insecure content in secure pages
+        // Don't create a "GPUCache" directory when cache-path is unspecified.
+        command_line->AppendSwitch("disable-gpu-shader-disk-cache"); // disable gpu shader disk cache
+        command_line->AppendSwitch("no-sanbox");
 
-		//http://www.chromium.org/developers/design-documents/process-models
-		if (m_uMode == 1)
-		{
-			command_line->AppendSwitch("process-per-site");                                     //each site in its own process
-			command_line->AppendSwitchWithValue("renderer-process-limit ", "8");              //limit renderer process count to decrease memory usage
-		}
-		else if (m_uMode == 2)
-		{
-			command_line->AppendSwitch("process-per-tab");                                      //each tab in its own process
-		}
-		else if (m_uMode == 3)
-		{
-			command_line->AppendSwitch("single-process");                                     //all in one process
-		}
-		command_line->AppendSwitchWithValue("autoplay-policy", "no-user-gesture-required");     //autoplay policy for media
+        // http://www.chromium.org/developers/design-documents/process-models
+        if (m_uMode == 1)
+        {
+            command_line->AppendSwitch("process-per-site");                      // each site in its own process
+            command_line->AppendSwitchWithValue("renderer-process-limit ", "8"); // limit renderer process count to decrease memory usage
+        }
+        else if (m_uMode == 2)
+        {
+            command_line->AppendSwitch("process-per-tab"); // each tab in its own process
+        }
+        else if (m_uMode == 3)
+        {
+            command_line->AppendSwitch("single-process"); // all in one process
+        }
+        command_line->AppendSwitchWithValue("autoplay-policy", "no-user-gesture-required"); // autoplay policy for media
 
-        //Support cross domain requests
+        // Support cross domain requests
         std::string values = command_line->GetSwitchValue("disable-features");
         if (values == "")
         {
@@ -146,27 +155,18 @@ void WebviewApp::OnBeforeCommandLineProcessing(const CefString &process_type, Ce
 
         command_line->AppendSwitchWithValue("disable-features", values);
         // for unsafe domain, add domain to whitelist
-		if (!m_strFilterDomain.empty())
-		{
-			command_line->AppendSwitch("ignore-certificate-errors");                            //ignore certificate errors
-			command_line->AppendSwitchWithValue("unsafely-treat-insecure-origin-as-secure",
-                m_strFilterDomain);
-		}
+        if (!m_strFilterDomain.empty())
+        {
+            command_line->AppendSwitch("ignore-certificate-errors"); // ignore certificate errors
+            command_line->AppendSwitchWithValue("unsafely-treat-insecure-origin-as-secure",
+                                                m_strFilterDomain);
+        }
     }
 }
 
 void WebviewApp::OnContextInitialized()
 {
-    CEF_REQUIRE_UI_THREAD();    
-}
-
-void WebviewApp::OnWebKitInitialized()
-{
-}
-
-void WebviewApp::OnBrowserCreated(CefRefPtr<CefBrowser> browser, CefRefPtr<CefDictionaryValue> extra_info)
-{
-
+    CEF_REQUIRE_UI_THREAD();
 }
 
 void WebviewApp::SetProcessMode(uint32_t uMode)
@@ -179,29 +179,9 @@ void WebviewApp::SetEnableGPU(bool bEnable)
     m_bEnableGPU = bEnable;
 }
 
-void WebviewApp::OnBeforeChildProcessLaunch(CefRefPtr<CefCommandLine> command_line)
-{
-}
-
-void WebviewApp::OnBrowserDestroyed(CefRefPtr<CefBrowser> browser)
-{
-}
-
-void WebviewApp::OnContextCreated(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefV8Context> context)
-{
-}
-
-void WebviewApp::OnContextReleased(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefV8Context> context)
-{
-}
-
-void WebviewApp::OnUncaughtException(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefV8Context> context, CefRefPtr<CefV8Exception> exception, CefRefPtr<CefV8StackTrace> stackTrace)
-{
-}
-
 void WebviewApp::OnFocusedNodeChanged(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefDOMNode> node)
- {    
-    //Get node attribute
+{
+    // Get node attribute
     bool is_editable = (node.get() && node->IsEditable());
     CefRefPtr<CefProcessMessage> message = CefProcessMessage::Create(kFocusedNodeChangedMessage);
     message->GetArgumentList()->SetBool(0, is_editable);
