@@ -497,62 +497,6 @@ void WebviewHandler::setClientFocus(int browserId, bool focus)
     it->second.browser->GetHost()->SetFocus(focus);
 }
 
-void WebviewHandler::setCookie(const std::string& domain, const std::string& key, const std::string& value){
-    CefRefPtr<CefCookieManager> manager = CefCookieManager::GetGlobalManager(nullptr);
-    if(manager){
-        CefCookie cookie;
-		CefString(&cookie.path).FromASCII("/");
-		CefString(&cookie.name).FromString(key.c_str());
-		CefString(&cookie.value).FromString(value.c_str());
-
-		if (!domain.empty()) {
-			CefString(&cookie.domain).FromString(domain.c_str());
-		}
-
-		cookie.httponly = true;
-		cookie.secure = false;
-		std::string httpDomain = "https://" + domain + "/cookiestorage";
-		manager->SetCookie(httpDomain, cookie, nullptr);
-    }
-}
-
-void WebviewHandler::deleteCookie(const std::string& domain, const std::string& key)
-{
-    CefRefPtr<CefCookieManager> manager = CefCookieManager::GetGlobalManager(nullptr);
-    if (manager) {
-        std::string httpDomain = "https://" + domain + "/cookiestorage";
-        manager->DeleteCookies(httpDomain, key, nullptr);
-    }
-}
-
-void WebviewHandler::visitAllCookies(std::function<void(std::map<std::string, std::map<std::string, std::string>>)> callback){
-    CefRefPtr<CefCookieManager> manager = CefCookieManager::GetGlobalManager(nullptr);
-    if (!manager)
-	{
-		return;
-	}
-
-    CefRefPtr<WebviewCookieVisitor> cookieVisitor = new WebviewCookieVisitor();
-    cookieVisitor->setOnVisitComplete(callback);
-
-    manager->VisitAllCookies(cookieVisitor);
-}
-
-void WebviewHandler::visitUrlCookies(const std::string& domain, const bool& isHttpOnly, std::function<void(std::map<std::string, std::map<std::string, std::string>>)> callback){
-    CefRefPtr<CefCookieManager> manager = CefCookieManager::GetGlobalManager(nullptr);
-    if (!manager)
-	{
-		return;
-	}
-
-    CefRefPtr<WebviewCookieVisitor> cookieVisitor = new WebviewCookieVisitor();
-    cookieVisitor->setOnVisitComplete(callback);
-
-    std::string httpDomain = "https://" + domain + "/cookiestorage";
-
-    manager->VisitUrlCookies(httpDomain, isHttpOnly, cookieVisitor);
-}
-
 void WebviewHandler::setJavaScriptChannels(int browserId, const std::vector<std::string> channels)
 {
     std::string extensionCode = "try{";

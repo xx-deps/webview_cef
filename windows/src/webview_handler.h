@@ -11,8 +11,6 @@
 #include <list>
 #include <unordered_map>
 
-#include "webview_cookieVisitor.h"
-
 #define ColorUNDERLINE \
   0xFF000000  // Black SkColor value for underline,
               // same as Blink.

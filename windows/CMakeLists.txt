@@ -35,8 +35,6 @@ list(APPEND PLUGIN_SOURCES
   "src/webview_value.h"
   "src/webview_js_handler.cc"
   "src/webview_js_handler.h"
-  "src/webview_cookieVisitor.cc"
-  "src/webview_cookieVisitor.h"
 )
 
 # Define the plugin library target. Its name must not be changed (see comment

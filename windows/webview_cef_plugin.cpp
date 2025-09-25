@@ -1,22 +1,24 @@
-﻿#include "webview_cef_plugin.h"
-#include "webview_cef_keyevent.h"
+﻿#include "webview_cef_plugin.h" // 插件的功能实现
+#include "webview_cef_keyevent.h" // 用于处理 CEF 中的键盘事件
+
 // This must be included before many other Windows headers.
-#include <windows.h>
+#include <windows.h>  // 引入 Windows API，允许与 Windows 系统交互。
+#include <VersionHelpers.h> // 用于平台版本检查，通常在插件实现中检查当前 Windows 系统的版本。
 
-// For getPlatformVersion; remove unless needed for your plugin implementation.
-#include <VersionHelpers.h>
-
+// 这些头文件是 Flutter 插件开发所必需的，用于与 Flutter 进行交互，包括方法调用、插件注册、标准方法编码解码等。
 #include <flutter/method_channel.h>
 #include <flutter_windows.h>
 #include <flutter/plugin_registrar_windows.h>
 #include <flutter/standard_method_codec.h>
 
+// 这些是 C++ 的标准库头文件，用于内存管理、线程处理、输入输出和互斥量（用于同步线程）
 #include <memory>
 #include <thread>
 #include <iostream>
 #include <mutex>
 
 namespace webview_cef {
+	// WebviewTextureRenderer 类负责管理和渲染 WebView 内容，具体包括纹理渲染
 	class WebviewTextureRenderer : public WebviewTexture{
 	public:
 		WebviewTextureRenderer(FlutterDesktopTextureRegistrarRef texture_registrar) {

@@ -341,59 +341,6 @@ namespace webview_cef {
 			}
 			result(1, nullptr);
 		}
-		else if(name.compare("setCookie") == 0){
-			const auto domain = webview_value_get_string(webview_value_get_list_value(values, 0));
-			const auto key = webview_value_get_string(webview_value_get_list_value(values, 1));
-			const auto value = webview_value_get_string(webview_value_get_list_value(values, 2));
-			m_handler->setCookie(domain, key, value);
-			result(1, nullptr);
-		}
-		else if (name.compare("deleteCookie") == 0) {
-			const auto domain = webview_value_get_string(webview_value_get_list_value(values, 0));
-			const auto key = webview_value_get_string(webview_value_get_list_value(values, 1));
-			m_handler->deleteCookie(domain, key);
-			result(1, nullptr);
-		}
-		else if (name.compare("visitAllCookies") == 0) {
-			m_handler->visitAllCookies([=](std::map<std::string, std::map<std::string, std::string>> cookies){
-				WValue* retMap = webview_value_new_map();
-				for (auto &cookie : cookies)
-				{
-					WValue* tempMap = webview_value_new_map();
-					for (auto &c : cookie.second)
-					{
-						WValue * val = webview_value_new_string(const_cast<char *>(c.second.c_str()));
-						webview_value_set_string(tempMap, c.first.c_str(), val);
-						webview_value_unref(val);
-					}
-					webview_value_set_string(retMap, cookie.first.c_str(), tempMap);
-					webview_value_unref(tempMap);
-				}
-				result(1, retMap);	
-				webview_value_unref(retMap);
-			});
-		}
-		else if (name.compare("visitUrlCookies") == 0) {
-			const auto domain = webview_value_get_string(webview_value_get_list_value(values, 0));
-			const auto isHttpOnly = webview_value_get_bool(webview_value_get_list_value(values, 1));
-			m_handler->visitUrlCookies(domain, isHttpOnly,[=](std::map<std::string, std::map<std::string, std::string>> cookies){
-				WValue* retMap = webview_value_new_map();
-				for (auto &cookie : cookies)
-				{
-					WValue* tempMap = webview_value_new_map();
-					for (auto &c : cookie.second)
-					{
-						WValue * val = webview_value_new_string(const_cast<char *>(c.second.c_str()));
-						webview_value_set_string(tempMap, c.first.c_str(), val);
-						webview_value_unref(val);
-					}
-					webview_value_set_string(retMap, cookie.first.c_str(), tempMap);
-					webview_value_unref(tempMap);
-				}
-				result(1, retMap);	
-				webview_value_unref(retMap);
-			});
-		}
 		else if(name.compare("setJavaScriptChannels") == 0){
 			int browserId = int(webview_value_get_int(webview_value_get_list_value(values, 0)));
 			WValue *list = webview_value_get_list_value(values, 1);
