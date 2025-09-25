@@ -14,18 +14,14 @@ typedef UrlChangeCb = void Function(String url);
 typedef LoadStartCb = void Function(WebViewController controller, String url);
 typedef LoadStopCb = void Function(WebViewController controller, String url);
 
-typedef OnConsoleMessage = void Function(
-    int level, String message, String source, int line);
 
 class WebviewEventsListener {
   UrlChangeCb? onUrlChanged;
-  OnConsoleMessage? onConsoleMessage;
   LoadStartCb? onLoadStart;
   LoadStopCb? onLoadEnd;
 
   WebviewEventsListener({
     this.onUrlChanged,
-    this.onConsoleMessage,
     this.onLoadStart,
     this.onLoadEnd,
   });

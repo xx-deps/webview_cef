@@ -96,14 +96,6 @@ bool WebviewHandler::OnTooltip(CefRefPtr<CefBrowser> browser, CefString& text) {
     return false;
 }
 
-bool WebviewHandler::OnConsoleMessage(CefRefPtr<CefBrowser> browser,
-                                      cef_log_severity_t level,
-                                      const CefString& message,
-                                      const CefString& source,
-                                      int line){
-    return false;
-}
-
 void WebviewHandler::OnAfterCreated(CefRefPtr<CefBrowser> browser) {
     CEF_REQUIRE_UI_THREAD();
     if (!browser->IsPopup()) {

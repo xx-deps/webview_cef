@@ -87,12 +87,6 @@ public:
                                 const CefCursorInfo &custom_cursor_info) override;
     // 当鼠标悬停在元素上时触发，
     virtual bool OnTooltip(CefRefPtr<CefBrowser> browser, CefString &text) override;
-    // 当浏览器的控制台输出消息时被调用
-    virtual bool OnConsoleMessage(CefRefPtr<CefBrowser> browser,
-                                  cef_log_severity_t level,
-                                  const CefString &message,
-                                  const CefString &source,
-                                  int line) override;
 
     // CefLifeSpanHandler methods:
     // 当浏览器窗口创建完成时被调用
