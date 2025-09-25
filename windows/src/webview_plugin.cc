@@ -420,13 +420,6 @@ namespace webview_cef {
 
 	int initCEFProcesses()
 	{
-#ifdef OS_MAC
-		CefScopedLibraryLoader loader;
-		if(!loader.LoadInMain()) {
-			printf("load cef err");
-		}
-#endif
-		// handler = new WebviewHandler();
 		app = new WebviewApp();
 		return CefExecuteProcess(mainArgs, app, nullptr);
 	}
@@ -441,14 +434,9 @@ namespace webview_cef {
 		}
 		//locale language setting
 		//CefString(&cefs.locale) = "zh-CN";
-#ifdef OS_MAC
-		//cef message loop handle by MainApplication on mac
-		cefs.external_message_pump = true;
-		//CefString(&cefs.browser_subprocess_path) = "/Library/Chaches"; //the helper Program path
-#else
+		
 		//cef message run in another thread on windows/linux
 		cefs.multi_threaded_message_loop = true;
-#endif
 		CefInitialize(mainArgs, cefs, app.get(), nullptr);
 	}
 

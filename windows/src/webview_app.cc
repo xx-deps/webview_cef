@@ -91,10 +91,7 @@ WebviewApp::ProcessType WebviewApp::GetProcessType(CefRefPtr<CefCommandLine> com
 	const std::string& process_type = command_line->GetSwitchValue("type");
 	if (process_type == "renderer")
 		return RendererProcess;
-#if defined(OS_LINUX)
-	else if (process_type == "zygote")
-		return ZygoteProcess;
-#endif
+
 	return OtherProcess;
 }
 
@@ -155,14 +152,6 @@ void WebviewApp::OnBeforeCommandLineProcessing(const CefString &process_type, Ce
                 m_strFilterDomain);
 		}
     }
-
-#ifdef __APPLE__
-    command_line->AppendSwitch("use-mock-keychain");
-    command_line->AppendSwitch("single-process");
-#endif
-#ifdef __linux__
-                                           
-#endif
 }
 
 void WebviewApp::OnContextInitialized()
