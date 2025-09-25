@@ -167,22 +167,8 @@ void WebviewApp::OnBeforeCommandLineProcessing(const CefString &process_type, Ce
 
 void WebviewApp::OnContextInitialized()
 {
-    CEF_REQUIRE_UI_THREAD();
-//    CefBrowserSettings browser_settings;
-//    browser_settings.windowless_frame_rate = 60;
-//                
-//    CefWindowInfo window_info;
-//    window_info.SetAsWindowless(0);
-//
-//    // create browser
-//    CefBrowserHost::CreateBrowser(window_info, m_handler, "", browser_settings, nullptr, nullptr);
-    
+    CEF_REQUIRE_UI_THREAD();    
 }
-
-// CefRefPtr<CefClient> WebviewApp::GetDefaultClient() {
-//     // Called when a new browser window is created via the Chrome runtime UI.
-//     return WebviewHandler::GetInstance();
-// }
 
 void WebviewApp::SetUnSafelyTreatInsecureOriginAsSecure(const CefString &strFilterDomain)
 {
@@ -191,84 +177,11 @@ void WebviewApp::SetUnSafelyTreatInsecureOriginAsSecure(const CefString &strFilt
 
 void WebviewApp::OnWebKitInitialized()
 {
-    //inject js function for jssdk
-    std::string extensionCode = R"(
-			var external = {};
-			var clientSdk = {};
-			(() => {
-				clientSdk.jsCmd = (functionName, arg1, arg2, arg3) => {
-					if (typeof arg1 === 'function') {
-						native function jsCmd(functionName, arg1);
-						return jsCmd(functionName, arg1);
-					} 
-					else if	 (typeof arg2 === 'function') {
-                        jsonString = arg1;
-                        if	(typeof arg1 !== 'string'){
-						    jsonString = JSON.stringify(arg1);
-                        }
-						native function jsCmd(functionName, jsonString, arg2);
-						return jsCmd(functionName, jsonString, arg2);
-					}
-					else if	 (typeof arg3 === 'function') {
-                        jsonString = arg1;
-                        if	(typeof arg1 !== 'string'){
-						    jsonString = JSON.stringify(arg1);
-                        }
-						native function jsCmd(functionName, jsonString, arg2, arg3);
-						return jsCmd(functionName, jsonString, arg2, arg3);
-					}else {
-
-					}
-				};
-
-                external.JavaScriptChannel = (n,e,r) => {
-                    var a; 
-                    null == r ? a = '' : (a = '_' + new Date + (1e3 + Math.floor(8999 * Math.random())), window[a] = function (n, e) { 
-                        return function () { 
-                            try {
-                                e && e.call && e.call(null, arguments[1]) 
-                            } finally {
-                                delete window[n]
-                            } 
-                        } 
-                    }(a, r)); 
-                    try {
-                        external.StartRequest(external.GetNextReqID(), n, a, JSON.stringify(e || {}), '') 
-                    } catch (l) {
-                        console.log('messeage send')
-                    }
-                }
-
-                external.EvaluateCallback = (nReqID, result) => {
-                    native function EvaluateCallback();
-                    EvaluateCallback(nReqID, result);
-                }
-
-				external.StartRequest  = (nReqID, strCmd, strCallBack, strArgs, strLog) => {
-					native function StartRequest();
-					StartRequest(nReqID, strCmd, strCallBack, strArgs, strLog);
-				};
-				external.GetNextReqID  = () => {
-				  native function GetNextReqID();
-				  return GetNextReqID();
-				};
-			})();
-		 )";
-
-    CefRefPtr<CefJSHandler> handler = new CefJSHandler();
-
-    if (!m_render_js_bridge.get())
-        m_render_js_bridge.reset(new CefJSBridge);
-    handler->AttachJSBridge(m_render_js_bridge);
-
-    CefRegisterExtension("v8/extern", extensionCode, handler);
 }
 
 void WebviewApp::OnBrowserCreated(CefRefPtr<CefBrowser> browser, CefRefPtr<CefDictionaryValue> extra_info)
 {
-    if (!m_render_js_bridge.get()) {
-        m_render_js_bridge.reset(new CefJSBridge);
-    }
+
 }
 
 void WebviewApp::SetProcessMode(uint32_t uMode)
@@ -295,10 +208,6 @@ void WebviewApp::OnContextCreated(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFr
 
 void WebviewApp::OnContextReleased(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefV8Context> context)
 {
-    if (m_render_js_bridge.get())
-    {
-        m_render_js_bridge->RemoveCallbackFuncWithFrame(frame);
-    }
 }
 
 void WebviewApp::OnUncaughtException(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefV8Context> context, CefRefPtr<CefV8Exception> exception, CefRefPtr<CefV8StackTrace> stackTrace)
@@ -322,17 +231,5 @@ void WebviewApp::OnFocusedNodeChanged(CefRefPtr<CefBrowser> browser, CefRefPtr<C
 
 bool WebviewApp::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefProcessId source_process, CefRefPtr<CefProcessMessage> message)
 {
-    const CefString& message_name = message->GetName();
-    if (message_name == kExecuteJsCallbackMessage)
-    {
-        int			callbackId = message->GetArgumentList()->GetInt(0);
-        bool		error = message->GetArgumentList()->GetBool(1);
-        CefString	result = message->GetArgumentList()->GetString(2);
-        if (m_render_js_bridge.get())
-        {
-            m_render_js_bridge->ExecuteJSCallbackFunc(callbackId, error, result);
-        }
-    }
-
     return false;
 }

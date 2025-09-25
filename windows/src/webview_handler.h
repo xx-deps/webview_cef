@@ -11,6 +11,8 @@
 #include <list>
 #include <unordered_map>
 
+static const char kFocusedNodeChangedMessage[] = "FocusedNodeChanged";		 //elements that capture focus in web pages changed message
+
 #define ColorUNDERLINE \
   0xFF000000  // Black SkColor value for underline,
               // same as Blink.
@@ -158,15 +160,6 @@ public:
     void imeSetComposition(int browserId, std::string text);
     void imeCommitText(int browserId, std::string text);
     void setClientFocus(int browserId, bool focus);
-
-    void setCookie(const std::string& domain, const std::string& key, const std::string& value);
-    void deleteCookie(const std::string& domain, const std::string& key);
-    void visitAllCookies(std::function<void(std::map<std::string, std::map<std::string, std::string>>)> callback);
-    void visitUrlCookies(const std::string& domain, const bool& isHttpOnly, std::function<void(std::map<std::string, std::map<std::string, std::string>>)> callback);
-
-    void setJavaScriptChannels(int browserId, const std::vector<std::string> channels);
-    void sendJavaScriptChannelCallBack(const bool error, const std::string result, const std::string callbackId, const int browserId, const std::string frameId);
-    void executeJavaScript(int browserId, const std::string code, std::function<void(CefRefPtr<CefValue>)> callback = nullptr);
     
 private:
     // List of existing browser windows. Only accessed on the CEF UI thread.

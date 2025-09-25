@@ -7,7 +7,10 @@
 
 #include <functional>
 #include "webview_handler.h"
-#include "webview_js_handler.h"
+#include "include/cef_base.h"
+#include "include/cef_app.h"
+#include <memory>
+#include <cstdint>
 
 // Implement application-level callbacks for the browser process.
 class WebviewApp : public CefApp, public CefBrowserProcessHandler, public CefRenderProcessHandler{
@@ -80,9 +83,11 @@ private:
     CefString                       m_strFilterDomain;                  //insecure domain whitelist       
 
     CefRefPtr<WebviewHandler>       m_handler;                          //webview handler for main process
-    std::shared_ptr<CefJSBridge>	m_render_js_bridge;                 //js bridge for render process
+    
     // Include the default reference counting implementation.
     IMPLEMENT_REFCOUNTING(WebviewApp);
 };
 
 #endif  // CEF_TESTS_CEFSIMPLE_SIMPLE_APP_H_
+
+// std::shared_ptr<CefJSBridge>	m_render_js_bridge;                 //js bridge for render process

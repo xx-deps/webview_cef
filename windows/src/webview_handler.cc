@@ -33,9 +33,6 @@ namespace stringpatch
         return stm.str() ;
     }
 }
-
-#include "webview_js_handler.h"
-
 namespace {
 // The only browser that currently get focused
 CefRefPtr<CefBrowser> current_focused_browser_ = nullptr;
@@ -70,31 +67,6 @@ bool WebviewHandler::OnProcessMessageReceived(
         onFocusedNodeChangeMessage(browser->GetIdentifier(), editable);
         if (editable) {
             onImeCompositionRangeChangedMessage(browser->GetIdentifier(), message->GetArgumentList()->GetInt(1), message->GetArgumentList()->GetInt(2));
-        }
-    }
-    else if(message_name == kJSCallCppFunctionMessage)
-    {
-        CefString fun_name = message->GetArgumentList()->GetString(0);
-		CefString param = message->GetArgumentList()->GetString(1);
-		int js_callback_id = message->GetArgumentList()->GetInt(2);
-
-        if (fun_name.empty() || !(browser.get())) {
-		    return false;
-	    }
-
-        onJavaScriptChannelMessage(
-            fun_name,param,stringpatch::to_string(js_callback_id), browser->GetIdentifier(), stringpatch::to_string(frame->GetIdentifier()));
-    }
-    else if(message_name == kEvaluateCallbackMessage){
-        CefString callbackId = message->GetArgumentList()->GetString(0);
-        CefRefPtr<CefValue> param = message->GetArgumentList()->GetValue(1);
-
-        if(!callbackId.empty()){
-            auto it = js_callbacks_.find(callbackId.ToString());
-            if(it != js_callbacks_.end()){
-                it->second(param);
-                js_callbacks_.erase(it);
-            }
         }
     }
     return false;
@@ -183,7 +155,7 @@ bool WebviewHandler::OnBeforePopup(CefRefPtr<CefBrowser> browser,
 
 void WebviewHandler::OnTakeFocus(CefRefPtr<CefBrowser> browser, bool next)
 {
-    executeJavaScript(browser->GetIdentifier(), "document.activeElement.blur()");
+    // executeJavaScript(browser->GetIdentifier(), "document.activeElement.blur()");
 }
 
 bool WebviewHandler::OnSetFocus(CefRefPtr<CefBrowser> browser, FocusSource source)
@@ -497,79 +469,13 @@ void WebviewHandler::setClientFocus(int browserId, bool focus)
     it->second.browser->GetHost()->SetFocus(focus);
 }
 
-void WebviewHandler::setJavaScriptChannels(int browserId, const std::vector<std::string> channels)
-{
-    std::string extensionCode = "try{";
-    for(auto& channel : channels)
-    {
-        extensionCode += channel;
-        extensionCode += " = (e,r) => {external.JavaScriptChannel('";
-        extensionCode += channel;
-        extensionCode += "',e,r)};";
-    }
-    extensionCode += "}catch(e){console.log(e);}";
-    executeJavaScript(browserId, extensionCode);
-}
 
-void WebviewHandler::sendJavaScriptChannelCallBack(const bool error, const std::string result, const std::string callbackId, const int browserId, const std::string frameId)
-{
-    CefRefPtr<CefProcessMessage> message = CefProcessMessage::Create(kExecuteJsCallbackMessage);
-    CefRefPtr<CefListValue> args = message->GetArgumentList();
-    args->SetInt(0, atoi(callbackId.c_str()));
-    args->SetBool(1, error);
-    args->SetString(2, result);
-    auto bit = browser_map_.find(browserId);
-    if(bit != browser_map_.end()){
-        int64_t frameIdInt = atoll(frameId.c_str());
-
-        CefRefPtr<CefFrame> frame = bit->second.browser->GetMainFrame();
-
-        // Return types for frame->GetIdentifier() changed, use the Linux way when updating MacOS or Windows
-        // versions in download.cmake
-#if __linux__
-        bool identifierMatch = std::stoll(frame->GetIdentifier().ToString()) == frameIdInt;
-#else
-        bool identifierMatch = frame->GetIdentifier() == frameIdInt;
-#endif
-        if (identifierMatch)
-        {
-            frame->SendProcessMessage(PID_RENDERER, message);
-        }
-    }
-}
-
-static std::string GetCallbackId()
-{
-    auto time = std::chrono::time_point_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now());
-	time_t timestamp = time.time_since_epoch().count();
-    return std::to_string(timestamp);
-} 
-
-void WebviewHandler::executeJavaScript(int browserId, const std::string code, std::function<void(CefRefPtr<CefValue>)> callback)
-{
-    if(!code.empty())
-    {
-        auto bit = browser_map_.find(browserId);
-        if(bit != browser_map_.end() && bit->second.browser.get()){
-            CefRefPtr<CefFrame> frame = bit->second.browser->GetMainFrame();
-            if (frame)
-            {
-                std::string finalCode = code;
-                if(callback != nullptr){
-                    std::string callbackId = GetCallbackId();
-
-                    finalCode = "external.EvaluateCallback('";
-                    finalCode += callbackId;
-                    finalCode += "',(function(){return ";
-                    finalCode += code;
-                    finalCode += "})());";
-                    js_callbacks_[callbackId] = callback;
-                }
-			    frame->ExecuteJavaScript(finalCode, frame->GetURL(), 0);
-            }
-        }
-    }
-}
+// static std::string GetCallbackId()
+// {
+//     auto time = std::chrono::time_point_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now());
+// 	time_t timestamp = time.time_since_epoch().count();
+//     return std::to_string(timestamp);
+// } 
 
 void WebviewHandler::GetViewRect(CefRefPtr<CefBrowser> browser, CefRect &rect) {
     CEF_REQUIRE_UI_THREAD();

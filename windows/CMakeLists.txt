@@ -33,8 +33,6 @@ list(APPEND PLUGIN_SOURCES
   "src/webview_plugin.h"
   "src/webview_value.cc"
   "src/webview_value.h"
-  "src/webview_js_handler.cc"
-  "src/webview_js_handler.h"
 )
 
 # Define the plugin library target. Its name must not be changed (see comment
