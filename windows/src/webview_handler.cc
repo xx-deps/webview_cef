@@ -246,13 +246,11 @@ void WebviewHandler::closeBrowser(int browserId)
 
 void WebviewHandler::createBrowser(std::string url, std::function<void(int)> callback)
 {
-#ifndef OS_MAC
     if (!CefCurrentlyOn(TID_UI))
     {
         CefPostTask(TID_UI, base::BindOnce(&WebviewHandler::createBrowser, this, url, callback));
         return;
     }
-#endif
     CefBrowserSettings browser_settings;
     browser_settings.windowless_frame_rate = 30;
     CefWindowInfo window_info;
@@ -402,9 +400,7 @@ void WebviewHandler::openDevTools(int browserId)
     if (it != browser_map_.end())
     {
         CefWindowInfo windowInfo;
-#ifdef OS_WIN
         windowInfo.SetAsPopup(nullptr, "DevTools");
-#endif
         it->second.browser->GetHost()->ShowDevTools(windowInfo, this, CefBrowserSettings(), CefPoint());
     }
 }
