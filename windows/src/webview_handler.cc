@@ -322,11 +322,6 @@ bool WebviewHandler::StartDragging(CefRefPtr<CefBrowser> browser,
     return true;
 }
 
-void WebviewHandler::OnImeCompositionRangeChanged(CefRefPtr<CefBrowser> browser, const CefRange &selection_range, const CefRenderHandler::RectList &character_bounds)
-{
-
-}
-
 void WebviewHandler::sendKeyEvent(CefKeyEvent& ev)
 {
     auto browser = current_focused_browser_;
@@ -376,50 +371,6 @@ void WebviewHandler::openDevTools(int browserId) {
     }
 }
 
-void WebviewHandler::imeSetComposition(int browserId, std::string text)
-{
-    auto it = browser_map_.find(browserId);
-    if (it==browser_map_.end() || !it->second.browser.get()) {
-        return;
-    }
-
-    CefString cTextStr = CefString(text);
-
-    std::vector<CefCompositionUnderline> underlines;
-    cef_composition_underline_t underline = {};
-    underline.range.from = 0;
-    underline.range.to = static_cast<int>(0 + cTextStr.length());
-    underline.color = ColorUNDERLINE;
-    underline.background_color = ColorBKCOLOR;
-    underline.thick = 0;
-    underline.style = CEF_CUS_DOT;
-    underlines.push_back(underline);
-
-    // Keeps the caret at the end of the composition
-    auto selection_range_end = static_cast<int>(0 + cTextStr.length());
-    CefRange selection_range = CefRange(0, selection_range_end);
-    it->second.browser->GetHost()->ImeSetComposition(cTextStr, underlines, CefRange(UINT32_MAX, UINT32_MAX), selection_range);
-}
-
-void WebviewHandler::imeCommitText(int browserId, std::string text)
-{
-    auto it = browser_map_.find(browserId);
-    if (it==browser_map_.end() || !it->second.browser.get()) {
-        return;
-    }
-
-    CefString cTextStr = CefString(text);
-    it->second.is_ime_commit = true;
-
-    std::vector<CefCompositionUnderline> underlines;
-    auto selection_range_end = static_cast<int>(0 + cTextStr.length());
-    CefRange selection_range = CefRange(selection_range_end, selection_range_end);
-#ifndef _WIN32
-        it->second.browser->GetHost()->ImeSetComposition(cTextStr, underlines, CefRange(UINT32_MAX, UINT32_MAX), selection_range);
-#endif
-    it->second.browser->GetHost()->ImeCommitText(cTextStr, CefRange(UINT32_MAX, UINT32_MAX), 0);
-
-}
 
 void WebviewHandler::setClientFocus(int browserId, bool focus)
 {

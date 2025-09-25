@@ -122,24 +122,6 @@ class WebViewController extends ValueNotifier<bool> {
     return _pluginChannel.invokeMethod('openDevTools', _browserId);
   }
 
-  Future<void> imeSetComposition(String composingText) async {
-    if (_isDisposed) {
-      return;
-    }
-    assert(value);
-    return _pluginChannel
-        .invokeMethod('imeSetComposition', [_browserId, composingText]);
-  }
-
-  Future<void> imeCommitText(String composingText) async {
-    if (_isDisposed) {
-      return;
-    }
-    assert(value);
-    return _pluginChannel
-        .invokeMethod('imeCommitText', [_browserId, composingText]);
-  }
-
   Future<void> setClientFocus(bool focus) async {
     if (_isDisposed) {
       return;
@@ -277,7 +259,6 @@ class WebView extends StatefulWidget {
 
 class WebViewState extends State<WebView> with WebeViewTextInput {
   final GlobalKey _key = GlobalKey();
-  String _composingText = '';
   late final _focusNode = FocusNode();
   bool isPrimaryFocus = false;
   WebviewTooltip? _tooltip;
@@ -287,42 +268,13 @@ class WebViewState extends State<WebView> with WebeViewTextInput {
 
   @override
   updateEditingValueWithDeltas(List<TextEditingDelta> textEditingDeltas) {
-    /// Handles IME composition only
-    for (var d in textEditingDeltas) {
-      if (d is TextEditingDeltaInsertion) {
-        // composing text
-        if (d.composing.isValid) {
-          _composingText += d.textInserted;
-          _controller.imeSetComposition(_composingText);
-        } else if (!Platform.isWindows) {
-          _controller.imeCommitText(d.textInserted);
-        }
-      } else if (d is TextEditingDeltaDeletion) {
-        if (d.composing.isValid) {
-          if (_composingText == d.textDeleted) {
-            _composingText = "";
-          }
-          _controller.imeSetComposition(_composingText);
-        }
-      } else if (d is TextEditingDeltaReplacement) {
-        if (d.composing.isValid) {
-          _composingText = d.replacementText;
-          _controller.imeSetComposition(_composingText);
-        }
-      } else if (d is TextEditingDeltaNonTextUpdate) {
-        if (_composingText.isNotEmpty) {
-          _controller.imeCommitText(_composingText);
-          _composingText = '';
-        }
-      }
-    }
+
   }
 
   @override
   void initState() {
     super.initState();
     _controller._onFocusedNodeChangeMessage = (editable) {
-      _composingText = '';
       editable ? attachTextInputClient() : detachTextInputClient();
       _controller._focusEditable = editable;
     };
@@ -369,7 +321,6 @@ class WebViewState extends State<WebView> with WebeViewTextInput {
       canRequestFocus: true,
       debugLabel: "webview_cef",
       onFocusChange: (focused) {
-        _composingText = '';
         if (focused) {
           _controller.setClientFocus(true);
           if (_controller._focusEditable) {

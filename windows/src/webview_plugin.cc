@@ -235,18 +235,6 @@ namespace webview_cef {
 			m_handler->openDevTools(browserId);
 			result(1, nullptr);
 		}
-		else if (name.compare("imeSetComposition") == 0) {
-			int browserId = int(webview_value_get_int(webview_value_get_list_value(values, 0)));
-			const auto text = webview_value_get_string(webview_value_get_list_value(values, 1));
-			m_handler->imeSetComposition(browserId, text);
-			result(1, nullptr);
-		} 
-		else if (name.compare("imeCommitText") == 0) {
-			int browserId = int(webview_value_get_int(webview_value_get_list_value(values, 0)));
-			const auto text = webview_value_get_string(webview_value_get_list_value(values, 1));
-			m_handler->imeCommitText(browserId, text);
-			result(1, nullptr);
-		} 
 		else if (name.compare("setClientFocus") == 0) {
 			int browserId = int(webview_value_get_int(webview_value_get_list_value(values, 0)));
 			if (m_renderers.find(browserId) != m_renderers.end() && m_renderers[browserId] != nullptr) {

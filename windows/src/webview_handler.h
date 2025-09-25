@@ -78,14 +78,18 @@ public:
     // CefDisplayHandler methods:
     virtual void OnTitleChange(CefRefPtr<CefBrowser> browser,
                                const CefString &title) override;
+    // 浏览器加载的 URL 地址发生变化时被调用。
     virtual void OnAddressChange(CefRefPtr<CefBrowser> browser,
                                  CefRefPtr<CefFrame> frame,
                                  const CefString &url) override;
+    //  当浏览器的光标变化时被调用，
     virtual bool OnCursorChange(CefRefPtr<CefBrowser> browser,
                                 CefCursorHandle cursor,
                                 cef_cursor_type_t type,
                                 const CefCursorInfo &custom_cursor_info) override;
+    // 当鼠标悬停在元素上时触发，
     virtual bool OnTooltip(CefRefPtr<CefBrowser> browser, CefString &text) override;
+    // 当浏览器的控制台输出消息时被调用
     virtual bool OnConsoleMessage(CefRefPtr<CefBrowser> browser,
                                   cef_log_severity_t level,
                                   const CefString &message,
@@ -93,9 +97,13 @@ public:
                                   int line) override;
 
     // CefLifeSpanHandler methods:
+    // 当浏览器窗口创建完成时被调用
     virtual void OnAfterCreated(CefRefPtr<CefBrowser> browser) override;
+    // 当浏览器关闭时被调用，
     virtual bool DoClose(CefRefPtr<CefBrowser> browser) override;
+    // 在浏览器关闭之前被调用
     virtual void OnBeforeClose(CefRefPtr<CefBrowser> browser) override;
+    // 浏览器准备打开新的弹出窗口时被调用，允许修改弹出窗口的相关设置（例如 URL、窗口信息等）
     virtual bool OnBeforePopup(CefRefPtr<CefBrowser> browser,
                                CefRefPtr<CefFrame> frame,
                                const CefString &target_url,
@@ -108,9 +116,11 @@ public:
                                CefBrowserSettings &settings,
                                CefRefPtr<CefDictionaryValue> &extra_info,
                                bool *no_javascript_access) override;
-
+    // 当浏览器获取焦点时被调用
     virtual void OnTakeFocus(CefRefPtr<CefBrowser> browser, bool next) override;
+    // 当浏览器的焦点发生变化时被调用，用于处理浏览器的焦点设置
     virtual bool OnSetFocus(CefRefPtr<CefBrowser> browser, FocusSource source) override;
+    // 当浏览器获得焦点时被调用。
     virtual void OnGotFocus(CefRefPtr<CefBrowser> browser) override;
 
     // CefLoadHandler methods:
@@ -127,15 +137,18 @@ public:
                              CefLoadHandler::TransitionType transition_type) override;
 
     // CefRenderHandler methods:
+    // 获取浏览器视图的矩形区域（位置和大小）
     virtual void GetViewRect(CefRefPtr<CefBrowser> browser, CefRect &rect) override;
+    // 当浏览器进行绘制时被调用。
     virtual void OnPaint(CefRefPtr<CefBrowser> browser, PaintElementType type, const RectList &dirtyRects, const void *buffer, int width, int height) override;
+    // 获取浏览器的屏幕信息，通常用于高 DPI 屏幕支持
     virtual bool GetScreenInfo(CefRefPtr<CefBrowser> browser, CefScreenInfo &screen_info) override;
+    // 当开始拖动元素时被调用，用于处理拖拽操作。
     virtual bool StartDragging(CefRefPtr<CefBrowser> browser,
                                CefRefPtr<CefDragData> drag_data,
                                DragOperationsMask allowed_ops,
                                int x,
                                int y) override;
-    virtual void OnImeCompositionRangeChanged(CefRefPtr<CefBrowser> browser, const CefRange &selection_range, const CefRenderHandler::RectList &character_bounds) override;
 
     // Request that all existing browser windows close.
     void CloseAllBrowsers(bool force_close);
@@ -143,23 +156,22 @@ public:
     // Returns true if the Chrome runtime is enabled.
     static bool IsChromeRuntimeEnabled();
 
-    void closeBrowser(int browserId);
-    void createBrowser(std::string url, std::function<void(int)> callback);
 
-    void sendScrollEvent(int browserId, int x, int y, int deltaX, int deltaY);
-    void changeSize(int browserId, float a_dpi, int width, int height);
-    void cursorClick(int browserId, int x, int y, bool up);
-    void cursorMove(int browserId, int x, int y, bool dragging);
-    void sendKeyEvent(CefKeyEvent &ev);
-    void loadUrl(int browserId, std::string url);
-    void goForward(int browserId);
-    void goBack(int browserId);
-    void reload(int browserId);
-    void openDevTools(int browserId);
+    void closeBrowser(int browserId);     // 关闭指定的浏览器窗口
+    void createBrowser(std::string url, std::function<void(int)> callback);  // 创建一个新的浏览器窗口并加载指定的 URL
 
-    void imeSetComposition(int browserId, std::string text);
-    void imeCommitText(int browserId, std::string text);
-    void setClientFocus(int browserId, bool focus);
+    void sendScrollEvent(int browserId, int x, int y, int deltaX, int deltaY);// 发送滚动事件，模拟浏览器的滚动操作
+    void changeSize(int browserId, float a_dpi, int width, int height); // 改变指定浏览器的大小
+    void cursorClick(int browserId, int x, int y, bool up); // 发送鼠标点击事件
+    void cursorMove(int browserId, int x, int y, bool dragging); // 发送鼠标移动事件
+    void sendKeyEvent(CefKeyEvent &ev); // 发送键盘事件
+    void loadUrl(int browserId, std::string url); // 加载指定 URL 的页面
+    void goForward(int browserId); // 浏览器前进到下一个页面
+    void goBack(int browserId); // 浏览器后退到上一个页面
+    void reload(int browserId); // 重新加载页面
+    void openDevTools(int browserId); // 打开浏览器的开发者工具
+
+    void setClientFocus(int browserId, bool focus); // 设置浏览器是否获取焦点。
 
 private:
     // List of existing browser windows. Only accessed on the CEF UI thread.
