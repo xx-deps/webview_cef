@@ -65,19 +65,12 @@ bool WebviewHandler::OnProcessMessageReceived(
         current_focused_browser_ = browser;
         bool editable = message->GetArgumentList()->GetBool(0);
         onFocusedNodeChangeMessage(browser->GetIdentifier(), editable);
-        if (editable) {
-            onImeCompositionRangeChangedMessage(browser->GetIdentifier(), message->GetArgumentList()->GetInt(1), message->GetArgumentList()->GetInt(2));
-        }
     }
     return false;
 }
 
 void WebviewHandler::OnTitleChange(CefRefPtr<CefBrowser> browser,
                                   const CefString& title) {
-    //todo: title change
-    if(onTitleChangedEvent) {
-        onTitleChangedEvent(browser->GetIdentifier(), title);
-    }
 }
 
 void WebviewHandler::OnAddressChange(CefRefPtr<CefBrowser> browser,
@@ -112,9 +105,6 @@ bool WebviewHandler::OnConsoleMessage(CefRefPtr<CefBrowser> browser,
                                       const CefString& message,
                                       const CefString& source,
                                       int line){
-    if(onConsoleMessageEvent){
-        onConsoleMessageEvent(browser->GetIdentifier(), level, message, source, line);
-    }
     return false;
 }
 
@@ -334,27 +324,7 @@ bool WebviewHandler::StartDragging(CefRefPtr<CefBrowser> browser,
 
 void WebviewHandler::OnImeCompositionRangeChanged(CefRefPtr<CefBrowser> browser, const CefRange &selection_range, const CefRenderHandler::RectList &character_bounds)
 {
-    CEF_REQUIRE_UI_THREAD();
-    auto it = browser_map_.find(browser->GetIdentifier());
-    if(it == browser_map_.end() || !it->second.browser.get() || browser->IsPopup()) {
-        return;
-    }
-    if (!character_bounds.empty()) {
-        if (it->second.is_ime_commit) {
-            auto lastCharacter = character_bounds.back();
-            it->second.prev_ime_position = lastCharacter;
-            onImeCompositionRangeChangedMessage(browser->GetIdentifier(), lastCharacter.x + lastCharacter.width, lastCharacter.y + lastCharacter.height);
-            it->second.is_ime_commit = false;
-        }
-        else
-        {
-            auto firstCharacter = character_bounds.front();
-            if (firstCharacter != it->second.prev_ime_position) {
-                it->second.prev_ime_position = firstCharacter;
-                onImeCompositionRangeChangedMessage(browser->GetIdentifier(), firstCharacter.x, firstCharacter.y + firstCharacter.height);
-            }
-        }
-    }
+
 }
 
 void WebviewHandler::sendKeyEvent(CefKeyEvent& ev)

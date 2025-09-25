@@ -67,29 +67,6 @@ namespace webview_cef {
 				}
 			};
 
-			m_handler->onConsoleMessageEvent = [=](int browserId, int level, std::string message, std::string source, int line){
-				if(m_invokeFunc){
-					WValue* bId = webview_value_new_int(browserId);
-					WValue* wLevel = webview_value_new_int(level);
-					WValue* wMessage = webview_value_new_string(const_cast<char*>(message.c_str()));
-					WValue* wSource = webview_value_new_string(const_cast<char*>(source.c_str()));
-					WValue* wLine = webview_value_new_int(line);
-					WValue* retMap = webview_value_new_map();
-					webview_value_set_string(retMap, "browserId", bId);
-					webview_value_set_string(retMap, "level", wLevel);
-					webview_value_set_string(retMap, "message", wMessage);
-					webview_value_set_string(retMap, "source", wSource);
-					webview_value_set_string(retMap, "line", wLine);
-					m_invokeFunc("onConsoleMessage", retMap);
-					webview_value_unref(bId);
-					webview_value_unref(wLevel);
-					webview_value_unref(wMessage);
-					webview_value_unref(wSource);
-					webview_value_unref(wLine);
-					webview_value_unref(retMap);
-				}
-			};
-
 			m_handler->onUrlChangedEvent = [=](int browserId, std::string url)
 			{
 				if (m_invokeFunc)
@@ -106,46 +83,6 @@ namespace webview_cef {
 				}
 			};
 
-			m_handler->onTitleChangedEvent = [=](int browserId, std::string title)
-			{
-				if (m_invokeFunc)
-				{
-					WValue* bId = webview_value_new_int(browserId);
-					WValue* wTitle = webview_value_new_string(const_cast<char*>(title.c_str()));
-					WValue* retMap = webview_value_new_map();
-					webview_value_set_string(retMap, "browserId", bId);
-					webview_value_set_string(retMap, "title", wTitle);
-					m_invokeFunc("titleChanged", retMap);
-					webview_value_unref(bId);
-					webview_value_unref(wTitle);
-					webview_value_unref(retMap);
-				}
-			};
-
-			m_handler->onJavaScriptChannelMessage = [=](std::string channelName, std::string message, std::string callbackId, int browserId, std::string frameId)
-			{
-				if (m_invokeFunc)
-				{
-					WValue* retMap = webview_value_new_map();
-					WValue* channel = webview_value_new_string(const_cast<char*>(channelName.c_str()));
-					WValue* msg = webview_value_new_string(const_cast<char*>(message.c_str()));
-					WValue* cbId = webview_value_new_string(const_cast<char*>(callbackId.c_str()));
-					WValue* bId = webview_value_new_int(browserId);
-					WValue* fId = webview_value_new_string(const_cast<char*>(frameId.c_str()));
-					webview_value_set_string(retMap, "channel", channel);
-					webview_value_set_string(retMap, "message", msg);
-					webview_value_set_string(retMap, "callbackId", cbId);
-					webview_value_set_string(retMap, "browserId", bId);
-					webview_value_set_string(retMap, "frameId", fId);
-					m_invokeFunc("javascriptChannelMessage", retMap);
-					webview_value_unref(retMap);
-					webview_value_unref(channel);
-					webview_value_unref(msg);
-					webview_value_unref(cbId);
-					webview_value_unref(bId);
-					webview_value_unref(fId);
-				}
-			};
 
 			m_handler->onFocusedNodeChangeMessage = [=](int nBrowserId, bool bEditable)
 			{
@@ -159,25 +96,6 @@ namespace webview_cef {
 					m_invokeFunc("onFocusedNodeChangeMessage", retMap);
 					webview_value_unref(bId);
 					webview_value_unref(editable);
-					webview_value_unref(retMap);
-				}
-			};
-
-			m_handler->onImeCompositionRangeChangedMessage = [=](int nBrowserId, int32_t x, int32_t y)
-			{
-				if (m_invokeFunc)
-				{
-					WValue* bId = webview_value_new_int(nBrowserId);
-					WValue* retMap = webview_value_new_map();
-					WValue* xValue = webview_value_new_int(x);
-					WValue* yValue = webview_value_new_int(y);
-					webview_value_set_string(retMap, "browserId", bId);
-					webview_value_set_string(retMap, "x", xValue);
-					webview_value_set_string(retMap, "y", yValue);
-					m_invokeFunc("onImeCompositionRangeChangedMessage", retMap);
-					webview_value_unref(bId);
-					webview_value_unref(xValue);
-					webview_value_unref(yValue);
 					webview_value_unref(retMap);
 				}
 			};
@@ -223,12 +141,8 @@ namespace webview_cef {
 		m_handler->onPaintCallback = nullptr;
 		m_handler->onTooltipEvent = nullptr;
 		m_handler->onCursorChangedEvent = nullptr;
-		m_handler->onConsoleMessageEvent = nullptr;
 		m_handler->onUrlChangedEvent = nullptr;
-		m_handler->onTitleChangedEvent = nullptr;
-		m_handler->onJavaScriptChannelMessage = nullptr;
 		m_handler->onFocusedNodeChangeMessage = nullptr;
-		m_handler->onImeCompositionRangeChangedMessage = nullptr;
 		m_init = false;
 	}
 

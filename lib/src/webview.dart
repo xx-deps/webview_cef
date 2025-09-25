@@ -38,21 +38,10 @@ class WebViewController extends ValueNotifier<bool> {
   WebviewEventsListener? _listener;
   WebviewEventsListener? get listener => _listener;
 
-  get onJavascriptChannelMessage => (final String channelName,
-          final String message, final String callbackId, final String frameId) {
-        if (_javascriptChannels.containsKey(channelName)) {
-          _javascriptChannels[channelName]!.onMessageReceived(
-              JavascriptMessage(message, callbackId, frameId));
-        } else {
-          print('Channel "$channelName" is not exstis');
-        }
-      };
 
   get onToolTip => _onToolTip;
   get onCursorChanged => _onCursorChanged;
   get onFocusedNodeChangeMessage => _onFocusedNodeChangeMessage;
-  get onImeCompositionRangeChangedMessage =>
-      _onImeCompositionRangeChangedMessage;
 
   /// Initializes the underlying platform view.
   Future<void> initialize(String url) async {
@@ -275,7 +264,6 @@ class WebViewController extends ValueNotifier<bool> {
   Function(String)? _onToolTip;
   Function(int)? _onCursorChanged;
   Function(bool editable)? _onFocusedNodeChangeMessage;
-  Function(int, int)? _onImeCompositionRangeChangedMessage;
 }
 
 class WebView extends StatefulWidget {
@@ -337,12 +325,6 @@ class WebViewState extends State<WebView> with WebeViewTextInput {
       _composingText = '';
       editable ? attachTextInputClient() : detachTextInputClient();
       _controller._focusEditable = editable;
-    };
-
-    _controller._onImeCompositionRangeChangedMessage = (x, y) {
-      final box = _key.currentContext!.findRenderObject() as RenderBox;
-      updateIMEComposionPosition(
-          x.toDouble(), y.toDouble(), box.localToGlobal(Offset.zero));
     };
 
     _controller._onToolTip = (final String text) {
@@ -418,7 +400,6 @@ class WebViewState extends State<WebView> with WebeViewTextInput {
           },
           onPointerDown: (ev) {
             if (!_focusNode.hasFocus) {
-              _controller._onImeCompositionRangeChangedMessage?.call(0, 0);
               _focusNode.requestFocus();
               Future.delayed(const Duration(milliseconds: 50), () {
                 if (!_focusNode.hasFocus) {

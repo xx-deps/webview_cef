@@ -105,14 +105,6 @@ class WebviewManager extends ValueNotifier<bool> {
             call.arguments["source"] as String,
             call.arguments["line"] as int);
         return;
-      case 'javascriptChannelMessage':
-        int browserId = call.arguments['browserId'] as int;
-        _webViews[browserId]?.onJavascriptChannelMessage?.call(
-            call.arguments['channel'] as String,
-            call.arguments['message'] as String,
-            call.arguments['callbackId'] as String,
-            call.arguments['frameId'] as String);
-        return;
       case 'onTooltip':
         int browserId = call.arguments['browserId'] as int;
         _webViews[browserId]?.onToolTip?.call(call.arguments['text'] as String);
@@ -127,12 +119,6 @@ class WebviewManager extends ValueNotifier<bool> {
         int browserId = call.arguments['browserId'] as int;
         bool editable = call.arguments['editable'] as bool;
         _webViews[browserId]?.onFocusedNodeChangeMessage(editable);
-        return;
-      case 'onImeCompositionRangeChangedMessage':
-        int browserId = call.arguments['browserId'] as int;
-        _webViews[browserId]
-            ?.onImeCompositionRangeChangedMessage
-            ?.call(call.arguments['x'] as int, call.arguments['y'] as int);
         return;
       case 'onLoadStart':
         int browserId = call.arguments["browserId"] as int;
