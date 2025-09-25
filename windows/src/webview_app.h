@@ -90,4 +90,3 @@ private:
 
 #endif  // CEF_TESTS_CEFSIMPLE_SIMPLE_APP_H_
 
-// std::shared_ptr<CefJSBridge>	m_render_js_bridge;                 //js bridge for render process
