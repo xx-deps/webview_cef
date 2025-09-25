@@ -13,13 +13,15 @@
 #include <cstdint>
 
 // Implement application-level callbacks for the browser process.
-class WebviewApp : public CefApp, public CefBrowserProcessHandler, public CefRenderProcessHandler{
+class WebviewApp : public CefApp, public CefBrowserProcessHandler, public CefRenderProcessHandler
+{
 public:
     WebviewApp(CefRefPtr<WebviewHandler> handler);
 
-    WebviewApp(){};
+    WebviewApp() {};
 
-    enum ProcessType{
+    enum ProcessType
+    {
         BrowserProcess,
         RendererProcess,
         ZygoteProcess,
@@ -27,18 +29,20 @@ public:
     };
 
     static ProcessType GetProcessType(CefRefPtr<CefCommandLine> command_line);
-    
+
     // CefApp methods:
-    CefRefPtr<CefBrowserProcessHandler> GetBrowserProcessHandler() override {
+    CefRefPtr<CefBrowserProcessHandler> GetBrowserProcessHandler() override
+    {
         return this;
     }
 
-    CefRefPtr<CefRenderProcessHandler> GetRenderProcessHandler() override { 
-        return this; 
+    CefRefPtr<CefRenderProcessHandler> GetRenderProcessHandler() override
+    {
+        return this;
     }
     // CefBrowserProcessHandler methods:
     void OnBeforeCommandLineProcessing(
-        const CefString& process_type,
+        const CefString &process_type,
         CefRefPtr<CefCommandLine> command_line) override;
     void SetProcessMode(uint32_t uMode);
     void SetEnableGPU(bool bEnable);
@@ -53,10 +57,10 @@ public:
     void OnBrowserDestroyed(CefRefPtr<CefBrowser> browser) override;
     void OnContextCreated(
         CefRefPtr<CefBrowser> browser,
-        CefRefPtr<CefFrame> frame, 
+        CefRefPtr<CefFrame> frame,
         CefRefPtr<CefV8Context> context) override;
     void OnContextReleased(
-        CefRefPtr<CefBrowser> browser, 
+        CefRefPtr<CefBrowser> browser,
         CefRefPtr<CefFrame> frame,
         CefRefPtr<CefV8Context> context) override;
     void OnUncaughtException(
@@ -74,17 +78,16 @@ public:
         CefRefPtr<CefFrame> frame,
         CefProcessId source_process,
         CefRefPtr<CefProcessMessage> message) override;
-    
-private:
-    uint32_t                        m_uMode = 1;                        //process mode
-    bool                            m_bEnableGPU = false;               //enable gpu
-    CefString                       m_strFilterDomain;                  //insecure domain whitelist       
 
-    CefRefPtr<WebviewHandler>       m_handler;                          //webview handler for main process
-    
+private:
+    uint32_t m_uMode = 1;        // process mode
+    bool m_bEnableGPU = false;   // enable gpu
+    CefString m_strFilterDomain; // insecure domain whitelist
+
+    CefRefPtr<WebviewHandler> m_handler; // webview handler for main process
+
     // Include the default reference counting implementation.
     IMPLEMENT_REFCOUNTING(WebviewApp);
 };
 
-#endif  // CEF_TESTS_CEFSIMPLE_SIMPLE_APP_H_
-
+#endif // CEF_TESTS_CEFSIMPLE_SIMPLE_APP_H_
