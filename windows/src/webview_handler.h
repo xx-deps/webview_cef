@@ -109,7 +109,7 @@ public:
                                CefRefPtr<CefClient> &client,
                                CefBrowserSettings &settings,
                                CefRefPtr<CefDictionaryValue> &extra_info,
-                               bool *no_javascript_access) override;
+                               bool *no_javascript_access);
     // 当浏览器获取焦点时被调用
     virtual void OnTakeFocus(CefRefPtr<CefBrowser> browser, bool next) override;
     // 当浏览器的焦点发生变化时被调用，用于处理浏览器的焦点设置

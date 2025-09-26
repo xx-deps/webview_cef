@@ -18,10 +18,13 @@ class _MyWebviewState extends State<MyWebview> {
 
     // 创建 webview
     _controller = WebviewManager().createWebView(
-        loading: const Column(children: [
+      loading: const Column(
+        children: [
           Text('loading'),
           CircularProgressIndicator(),
-        ],),);
+        ],
+      ),
+    );
 
     _initializeWebView();
   }
@@ -37,8 +40,7 @@ class _MyWebviewState extends State<MyWebview> {
   Future<void> _initializeWebView() async {
     await WebviewManager().initialize(userAgent: "test/userAgent");
 
-    _controller.setWebviewListener(WebviewEventsListener(
-    ));
+    _controller.setWebviewListener(WebviewEventsListener());
 
     await _controller.initialize(widget.url);
 
@@ -49,6 +51,15 @@ class _MyWebviewState extends State<MyWebview> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        SizedBox(
+          height: 48,
+          child: MaterialButton(
+            onPressed: () {
+              _controller.openDevTools();
+            },
+            child: const Icon(Icons.developer_mode),
+          ),
+        ),
         Expanded(
             child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

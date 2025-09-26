@@ -112,12 +112,12 @@ void WebviewApp::OnBeforeCommandLineProcessing(const CefString &process_type, Ce
     {
         if (!m_bEnableGPU)
         {
-            command_line->AppendSwitch("disable-gpu");
-            command_line->AppendSwitch("disable-gpu-compositing");
+            // command_line->AppendSwitch("disable-gpu");
+            // command_line->AppendSwitch("disable-gpu-compositing");
         }
 
-        command_line->AppendSwitch("disable-web-security");           // disable web security
-        command_line->AppendSwitch("allow-running-insecure-content"); // allow running insecure content in secure pages
+        // command_line->AppendSwitch("disable-web-security");           // disable web security
+        // command_line->AppendSwitch("allow-running-insecure-content"); // allow running insecure content in secure pages
         // Don't create a "GPUCache" directory when cache-path is unspecified.
         // command_line->AppendSwitch("disable-gpu-shader-disk-cache"); // disable gpu shader disk cache
         command_line->AppendSwitch("no-sanbox");
@@ -125,42 +125,42 @@ void WebviewApp::OnBeforeCommandLineProcessing(const CefString &process_type, Ce
         // http://www.chromium.org/developers/design-documents/process-models
         if (m_uMode == 1)
         {
-            command_line->AppendSwitch("process-per-site");                      // each site in its own process
-            command_line->AppendSwitchWithValue("renderer-process-limit ", "8"); // limit renderer process count to decrease memory usage
+            // command_line->AppendSwitch("process-per-site");                      // each site in its own process
+            // command_line->AppendSwitchWithValue("renderer-process-limit ", "8"); // limit renderer process count to decrease memory usage
         }
         else if (m_uMode == 2)
         {
-            command_line->AppendSwitch("process-per-tab"); // each tab in its own process
+            // command_line->AppendSwitch("process-per-tab"); // each tab in its own process
         }
         else if (m_uMode == 3)
         {
-            command_line->AppendSwitch("single-process"); // all in one process
+            // command_line->AppendSwitch("single-process"); // all in one process
         }
-        command_line->AppendSwitchWithValue("autoplay-policy", "no-user-gesture-required"); // autoplay policy for media
+        // command_line->AppendSwitchWithValue("autoplay-policy", "no-user-gesture-required"); // autoplay policy for media
 
         // Support cross domain requests
         std::string values = command_line->GetSwitchValue("disable-features");
         if (values == "")
         {
-            values = "SameSiteByDefaultCookies,CookiesWithoutSameSiteMustBeSecure";
+            // values = "SameSiteByDefaultCookies,CookiesWithoutSameSiteMustBeSecure";
         }
         else
         {
-            values += ",SameSiteByDefaultCookies,CookiesWithoutSameSiteMustBeSecure";
+            // values += ",SameSiteByDefaultCookies,CookiesWithoutSameSiteMustBeSecure";
         }
-        if (values.find("CalculateNativeWinOcclusion") == size_t(-1))
-        {
-            values += ",CalculateNativeWinOcclusion";
-        }
+        // if (values.find("CalculateNativeWinOcclusion") == size_t(-1))
+        // {
+        //     values += ",CalculateNativeWinOcclusion";
+        // }
 
-        command_line->AppendSwitchWithValue("disable-features", values);
-        // for unsafe domain, add domain to whitelist
-        if (!m_strFilterDomain.empty())
-        {
-            command_line->AppendSwitch("ignore-certificate-errors"); // ignore certificate errors
-            command_line->AppendSwitchWithValue("unsafely-treat-insecure-origin-as-secure",
-                                                m_strFilterDomain);
-        }
+        // command_line->AppendSwitchWithValue("disable-features", values);
+        // // for unsafe domain, add domain to whitelist
+        // if (!m_strFilterDomain.empty())
+        // {
+        //     command_line->AppendSwitch("ignore-certificate-errors"); // ignore certificate errors
+        //     command_line->AppendSwitchWithValue("unsafely-treat-insecure-origin-as-secure",
+        //                                         m_strFilterDomain);
+        // }
     }
 }
 
