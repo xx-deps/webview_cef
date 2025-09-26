@@ -37,7 +37,7 @@ class _WebViewTabsState extends State<WebViewTabs>
         break;
       case 1:
         child =
-            MyWebview(url: "http://localhost:61219/");
+            MyWebview(url: "http://baidu.com"); 
         break;
       case 2:
         child = MyWebview(url: "https://web.oopz.cn/");
