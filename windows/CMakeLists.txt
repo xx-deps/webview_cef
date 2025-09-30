@@ -97,7 +97,6 @@ set(webview_cef_bundled_libraries
     $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/Release/chrome_elf.dll>
     $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/Release/libcef.dll>
     $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/Release/v8_context_snapshot.bin>
-    $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/Release/swiftshader>
     $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/Release/d3dcompiler_47.dll>
     $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/Release/libEGL.dll>
     $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/Release/libGLESv2.dll>
