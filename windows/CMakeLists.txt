@@ -14,7 +14,7 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /MD")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /MDd")
 
-set(SHARED_ASSETS_CEF_DIR "C:/shared-assets/cef")
+set(SHARED_ASSETS_CEF_DIR "C:/shared-assets/cef/cef140")
 
 if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
 message(STATUS "${CMAKE_BUILD_TYPE}")
@@ -22,7 +22,7 @@ endif()
 
 # include(${CMAKE_CURRENT_SOURCE_DIR}/third/download.cmake)
 # # wait for unified version cef source code and prebuilt files
-# prepare_prebuilt_files(${CMAKE_CURRENT_SOURCE_DIR}/third/cef)
+# prepare_prebuilt_files(${CMAKE_CURRENT_SOURCE_DIR})
 
 # This value is used when generating builds using this plugin, so it must
 # not be changed
@@ -67,54 +67,52 @@ target_compile_definitions(${PLUGIN_NAME} PRIVATE FLUTTER_PLUGIN_IMPL)
 # dependencies here.
 target_include_directories(${PLUGIN_NAME} INTERFACE
   "${CMAKE_CURRENT_SOURCE_DIR}/include")
-include_directories(${SHARED_ASSETS_CEF_DIR}/third/cef)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
+include_directories(${SHARED_ASSETS_CEF_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 target_link_libraries(${PLUGIN_NAME} PRIVATE flutter flutter_wrapper_plugin
-debug ${SHARED_ASSETS_CEF_DIR}/third/cef/debug/libcef.lib
-debug ${SHARED_ASSETS_CEF_DIR}/third/cef/debug/libcef_dll_wrapper.lib
-optimized ${SHARED_ASSETS_CEF_DIR}/third/cef/release/libcef.lib
-optimized ${SHARED_ASSETS_CEF_DIR}/third/cef/release/libcef_dll_wrapper.lib)
+debug ${SHARED_ASSETS_CEF_DIR}/Debug/libcef.lib
+debug ${SHARED_ASSETS_CEF_DIR}/Debug/libcef_dll_wrapper.lib
+optimized ${SHARED_ASSETS_CEF_DIR}/Release/libcef.lib
+optimized ${SHARED_ASSETS_CEF_DIR}/Release/libcef_dll_wrapper.lib)
 
 # List of absolute paths to libraries that should be bundled with the plugin.
 # This list could contain prebuilt libraries, or libraries created by an
 # external build triggered from this build file.
 set(webview_cef_bundled_libraries
-    "${SHARED_ASSETS_CEF_DIR}/third/cef/resources/locales"
-    "${SHARED_ASSETS_CEF_DIR}/third/cef/resources/icudtl.dat"
-    "${SHARED_ASSETS_CEF_DIR}/third/cef/resources/resources.pak"
-    "${SHARED_ASSETS_CEF_DIR}/third/cef/resources/chrome_100_percent.pak"
-    "${SHARED_ASSETS_CEF_DIR}/third/cef/resources/chrome_200_percent.pak"
-    $<$<CONFIG:Debug>:${SHARED_ASSETS_CEF_DIR}/third/cef/debug/bin/chrome_elf.dll>
-    $<$<CONFIG:Debug>:${SHARED_ASSETS_CEF_DIR}/third/cef/debug/bin/libcef.dll>
-    $<$<CONFIG:Debug>:${SHARED_ASSETS_CEF_DIR}/third/cef/debug/bin/v8_context_snapshot.bin>
-    $<$<CONFIG:Debug>:${SHARED_ASSETS_CEF_DIR}/third/cef/debug/bin/swiftshader>
-    $<$<CONFIG:Debug>:${SHARED_ASSETS_CEF_DIR}/third/cef/debug/bin/d3dcompiler_47.dll>
-    $<$<CONFIG:Debug>:${SHARED_ASSETS_CEF_DIR}/third/cef/debug/bin/libEGL.dll>
-    $<$<CONFIG:Debug>:${SHARED_ASSETS_CEF_DIR}/third/cef/debug/bin/libGLESv2.dll>
-    $<$<CONFIG:Debug>:${SHARED_ASSETS_CEF_DIR}/third/cef/debug/bin/vulkan-1.dll>
-    $<$<CONFIG:Debug>:${SHARED_ASSETS_CEF_DIR}/third/cef/debug/bin/vk_swiftshader.dll>
-    $<$<CONFIG:Debug>:${SHARED_ASSETS_CEF_DIR}/third/cef/debug/bin/vk_swiftshader_icd.json>
-    $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/third/cef/release/bin/chrome_elf.dll>
-    $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/third/cef/release/bin/libcef.dll>
-    $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/third/cef/release/bin/v8_context_snapshot.bin>
-    $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/third/cef/release/bin/swiftshader>
-    $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/third/cef/release/bin/d3dcompiler_47.dll>
-    $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/third/cef/release/bin/libEGL.dll>
-    $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/third/cef/release/bin/libGLESv2.dll>
-    $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/third/cef/release/bin/vulkan-1.dll>
-    $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/third/cef/release/bin/vk_swiftshader.dll>
-    $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/third/cef/release/bin/vk_swiftshader_icd.json>
-    $<$<CONFIG:Profile>:${SHARED_ASSETS_CEF_DIR}/third/cef/release/bin/chrome_elf.dll>
-    $<$<CONFIG:Profile>:${SHARED_ASSETS_CEF_DIR}/third/cef/release/bin/libcef.dll>
-    $<$<CONFIG:Profile>:${SHARED_ASSETS_CEF_DIR}/third/cef/release/bin/v8_context_snapshot.bin>
-    $<$<CONFIG:Profile>:${SHARED_ASSETS_CEF_DIR}/third/cef/release/bin/swiftshader>
-    $<$<CONFIG:Profile>:${SHARED_ASSETS_CEF_DIR}/third/cef/release/bin/d3dcompiler_47.dll>
-    $<$<CONFIG:Profile>:${SHARED_ASSETS_CEF_DIR}/third/cef/release/bin/libEGL.dll>
-    $<$<CONFIG:Profile>:${SHARED_ASSETS_CEF_DIR}/third/cef/release/bin/libGLESv2.dll>
-    $<$<CONFIG:Profile>:${SHARED_ASSETS_CEF_DIR}/third/cef/release/bin/vulkan-1.dll>
-    $<$<CONFIG:Profile>:${SHARED_ASSETS_CEF_DIR}/third/cef/release/bin/vk_swiftshader.dll>
-    $<$<CONFIG:Profile>:${SHARED_ASSETS_CEF_DIR}/third/cef/release/bin/vk_swiftshader_icd.json>
+    "${SHARED_ASSETS_CEF_DIR}/resources/locales"
+    "${SHARED_ASSETS_CEF_DIR}/resources/icudtl.dat"
+    "${SHARED_ASSETS_CEF_DIR}/resources/resources.pak"
+    "${SHARED_ASSETS_CEF_DIR}/resources/chrome_100_percent.pak"
+    "${SHARED_ASSETS_CEF_DIR}/resources/chrome_200_percent.pak"
+    $<$<CONFIG:Debug>:${SHARED_ASSETS_CEF_DIR}/Debug/chrome_elf.dll>
+    $<$<CONFIG:Debug>:${SHARED_ASSETS_CEF_DIR}/Debug/libcef.dll>
+    $<$<CONFIG:Debug>:${SHARED_ASSETS_CEF_DIR}/Debug/v8_context_snapshot.bin>
+    $<$<CONFIG:Debug>:${SHARED_ASSETS_CEF_DIR}/Debug/d3dcompiler_47.dll>
+    $<$<CONFIG:Debug>:${SHARED_ASSETS_CEF_DIR}/Debug/libEGL.dll>
+    $<$<CONFIG:Debug>:${SHARED_ASSETS_CEF_DIR}/Debug/libGLESv2.dll>
+    $<$<CONFIG:Debug>:${SHARED_ASSETS_CEF_DIR}/Debug/vulkan-1.dll>
+    $<$<CONFIG:Debug>:${SHARED_ASSETS_CEF_DIR}/Debug/vk_swiftshader.dll>
+    $<$<CONFIG:Debug>:${SHARED_ASSETS_CEF_DIR}/Debug/vk_swiftshader_icd.json>
+    $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/Release/chrome_elf.dll>
+    $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/Release/libcef.dll>
+    $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/Release/v8_context_snapshot.bin>
+    $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/Release/swiftshader>
+    $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/Release/d3dcompiler_47.dll>
+    $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/Release/libEGL.dll>
+    $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/Release/libGLESv2.dll>
+    $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/Release/vulkan-1.dll>
+    $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/Release/vk_swiftshader.dll>
+    $<$<CONFIG:Release>:${SHARED_ASSETS_CEF_DIR}/Release/vk_swiftshader_icd.json>
+    $<$<CONFIG:Profile>:${SHARED_ASSETS_CEF_DIR}/Release/chrome_elf.dll>
+    $<$<CONFIG:Profile>:${SHARED_ASSETS_CEF_DIR}/Release/libcef.dll>
+    $<$<CONFIG:Profile>:${SHARED_ASSETS_CEF_DIR}/Release/v8_context_snapshot.bin>
+    $<$<CONFIG:Profile>:${SHARED_ASSETS_CEF_DIR}/Release/d3dcompiler_47.dll>
+    $<$<CONFIG:Profile>:${SHARED_ASSETS_CEF_DIR}/Release/libEGL.dll>
+    $<$<CONFIG:Profile>:${SHARED_ASSETS_CEF_DIR}/Release/libGLESv2.dll>
+    $<$<CONFIG:Profile>:${SHARED_ASSETS_CEF_DIR}/Release/vulkan-1.dll>
+    $<$<CONFIG:Profile>:${SHARED_ASSETS_CEF_DIR}/Release/vk_swiftshader.dll>
+    $<$<CONFIG:Profile>:${SHARED_ASSETS_CEF_DIR}/Release/vk_swiftshader_icd.json>
     PARENT_SCOPE)
 
 
