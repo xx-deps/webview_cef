@@ -56,7 +56,6 @@ WebviewHandler::WebviewHandler()
 WebviewHandler::~WebviewHandler()
 {
     browser_map_.clear();
-    js_callbacks_.clear();
 }
 
 bool WebviewHandler::OnProcessMessageReceived(

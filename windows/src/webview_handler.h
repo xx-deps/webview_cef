@@ -183,7 +183,6 @@ private:
     // （哈希表），用于存储所有打开的浏览器窗口。
     std::unordered_map<int, browser_info> browser_map_;
 
-    std::unordered_map<std::string, std::function<void(CefRefPtr<CefValue>)>> js_callbacks_;
     // Include the default reference counting implementation.
     IMPLEMENT_REFCOUNTING(WebviewHandler);
 };
