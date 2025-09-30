@@ -80,3 +80,9 @@ This demo is a simple webview app that can be used to test the `webview_cef` plu
 ## Credits
 
 This project is inspired from [**`flutter_webview_windows`**](https://github.com/jnschulze/flutter-webview-windows).
+ 
+## add CEF binaries
+从 https://cef-builds.spotifycdn.com/index.html 下载 cef 二进制文件
+> 使用 Standard Distribution
+放置到 C:/shared-assets/cef/cef140
+C:/shared-assets/cef/cef140
